@@ -1,0 +1,63 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+@(await Html.PartialAsync("_StatusMessage", Model.StatusMessage))
+
+<div class="row form-group">
+    <div class="col-md-6">
+        <img src="~/images/avatars/@(Model.ImageUrl ?? "default-avatar.png")" class="manage-avatar-image img-thumbnail" alt="Default avatar" />
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-md-6">
+        <button class="p2 btn btn-primary" data-toggle="modal" data-target="#upload-modal">Change profile picture</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-default">Save</button>
+        </form>
+    </div>
+</div>
+
+@*upload modal*@
+<div id="upload-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form asp-controller="Manage" asp-action="Avatar" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <label class="avatar-upload-label">
+                        Drag or click to upload..
+                        <input type="file" name="AvatarImage"/>
+                    </label>
+                    <img class="img-rounded avatar-img-preview hidden" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="remove-img" class="btn btn-danger">Discard</button>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script src="~/js/upload.js"></script>
+}

@@ -11,7 +11,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Areas\Identity\Models\" />
+    <Folder Include="Areas\Identity\Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Identity\Views\Shared\_ValidationScriptsPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Identity\Views\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Identity\Views\_ViewStart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>
