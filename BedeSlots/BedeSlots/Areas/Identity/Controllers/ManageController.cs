@@ -1,27 +1,28 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BedeSlots.Areas.Identity.Models.ManageViewModels;
+using BedeSlots.DataModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace BadeSlots.Areas.Identity.Controllers
+namespace BedeSlots.Areas.Identity.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
         private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signinManager;
-        private readonly IUsersService usersService;
+        private readonly SignInManager<User> signinManager;        
 
         public ManageController(
             UserManager<User> userManager, 
-            SignInManager<User> signinManager,
-            IUsersService usersService)
+            SignInManager<User> signinManager
+            )
         {
             this.userManager = userManager;
             this.signinManager = signinManager;
-            this.usersService = usersService;
+            
         }
 
         [TempData]
@@ -38,8 +39,7 @@ namespace BadeSlots.Areas.Identity.Controllers
 
             var model = new IndexViewModel
             {
-                PhoneNumber = user.PhoneNumber,
-                ImageUrl = user.AvatarImageName,
+                PhoneNumber = user.PhoneNumber,                
                 StatusMessage = StatusMessage
             };
 
