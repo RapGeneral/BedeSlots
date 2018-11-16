@@ -96,9 +96,7 @@ namespace BedeSlots.DataContext.Migrations
 
                     b.Property<decimal>("Amount");
 
-                    b.Property<Guid?>("BalanceId1");
-
-                    b.Property<Guid?>("BalanceIdId");
+                    b.Property<Guid>("BalanceId");
 
                     b.Property<DateTime>("Date");
 
@@ -110,9 +108,7 @@ namespace BedeSlots.DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BalanceId1");
-
-                    b.HasIndex("BalanceIdId");
+                    b.HasIndex("BalanceId");
 
                     b.HasIndex("TypeId");
 
@@ -321,7 +317,7 @@ namespace BedeSlots.DataContext.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BedeSlots.DataModels.User", "User")
-                        .WithMany("Balance")
+                        .WithMany("Balances")
                         .HasForeignKey("UserId");
                 });
 
@@ -341,12 +337,9 @@ namespace BedeSlots.DataContext.Migrations
             modelBuilder.Entity("BedeSlots.DataModels.Transaction", b =>
                 {
                     b.HasOne("BedeSlots.DataModels.Balance", "Balance")
-                        .WithMany()
-                        .HasForeignKey("BalanceId1");
-
-                    b.HasOne("BedeSlots.DataModels.Balance", "BalanceId")
-                        .WithMany()
-                        .HasForeignKey("BalanceIdId");
+                        .WithMany("Transactions")
+                        .HasForeignKey("BalanceId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BedeSlots.DataModels.TransactionType", "Type")
                         .WithMany()

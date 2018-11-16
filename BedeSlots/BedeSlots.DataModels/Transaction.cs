@@ -9,13 +9,12 @@ namespace BedeSlots.DataModels
         public Guid Id { get; set; }
         public Guid TypeId { get; set; }
 
+        public Guid BalanceId { get; set; }
         public DateTime Date { get; set; }
 
         public string Description { get; set; }
 
-        public decimal Amount { get; set; }
-        
-        public Balance BalanceId { get; set; }
+        public decimal Amount { get; set; }        
 
         public decimal OpeningBalance { get; set; }
 

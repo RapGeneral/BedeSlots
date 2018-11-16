@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BedeSlots.DataContext.Migrations
 {
-    public partial class initial : Migration
+    public partial class fixedtransaction : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -283,25 +283,18 @@ namespace BedeSlots.DataContext.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     TypeId = table.Column<Guid>(nullable: false),
+                    BalanceId = table.Column<Guid>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Amount = table.Column<decimal>(nullable: false),
-                    BalanceIdId = table.Column<Guid>(nullable: true),
-                    OpeningBalance = table.Column<decimal>(nullable: false),
-                    BalanceId1 = table.Column<Guid>(nullable: true)
+                    OpeningBalance = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transactions_Balances_BalanceId1",
-                        column: x => x.BalanceId1,
-                        principalTable: "Balances",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transactions_Balances_BalanceIdId",
-                        column: x => x.BalanceIdId,
+                        name: "FK_Transactions_Balances_BalanceId",
+                        column: x => x.BalanceId,
                         principalTable: "Balances",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -378,14 +371,9 @@ namespace BedeSlots.DataContext.Migrations
                 column: "ToCurrencyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_BalanceId1",
+                name: "IX_Transactions_BalanceId",
                 table: "Transactions",
-                column: "BalanceId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_BalanceIdId",
-                table: "Transactions",
-                column: "BalanceIdId");
+                column: "BalanceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_TypeId",

@@ -12,7 +12,7 @@ namespace BedeSlots.DataModels
 
         public ICollection<UserBankDetails> UserBankDetails { get; set; }
 
-        public ICollection<Balance> Balance { get; set; }
+        public ICollection<Balance> Balances { get; set; }
         
         public Currency Currency { get; set; }
 

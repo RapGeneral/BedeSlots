@@ -17,6 +17,8 @@ namespace BedeSlots.DataModels
         public User User { get; set; }
 
         public Currency Currency { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
         
     }
 }

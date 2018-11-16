@@ -36,6 +36,11 @@ namespace BedeSlots.DataContext
                 .WithMany(tc => tc.Rates)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Transaction>()
+                .HasOne(t => t.Balance)
+                .WithMany(b => b.Transactions)
+                .OnDelete(DeleteBehavior.Restrict);
+
             base.OnModelCreating(builder);
         }
 
