@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BadeSlots.Areas.Identity.Models.AccountViewModels
+namespace BedeSlots.Areas.Identity.Models.AccountViewModels
 {
     public class RegisterViewModel
     {

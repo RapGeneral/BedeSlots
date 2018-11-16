@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BadeSlots.Areas.Identity.Models.AccountViewModels
+namespace BedeSlots.Areas.Identity.Models.AccountViewModels
 {
     public class LoginViewModel
     {

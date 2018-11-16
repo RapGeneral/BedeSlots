@@ -1,11 +1,13 @@
-﻿using BedeSlots.Controllers;
+﻿using BedeSlots.Areas.Identity.Models.AccountViewModels;
+using BedeSlots.Controllers;
+using BedeSlots.DataModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace BadeSlots.Areas.Identity.Controllers
+namespace BedeSlots.Areas.Identity.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]

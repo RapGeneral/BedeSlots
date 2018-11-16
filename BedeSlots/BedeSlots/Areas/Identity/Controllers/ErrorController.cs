@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BedeSlots.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace BadeSlots.Areas.Identity.Controllers
+namespace BedeSlots.Areas.Identity.Controllers
 {
     public class ErrorController : Controller
     {
