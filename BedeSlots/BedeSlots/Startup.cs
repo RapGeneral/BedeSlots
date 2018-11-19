@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BedeSlots.DataContext;
+using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
+using BedeSlots.Providers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +44,11 @@ namespace BedeSlots
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<BedeDbContext>();
+
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
+
             services.AddMemoryCache();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
