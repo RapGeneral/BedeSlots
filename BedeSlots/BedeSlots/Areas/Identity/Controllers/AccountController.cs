@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace BedeSlots.Areas.Identity.Controllers
 {
     [Authorize]
+    [Area("Identity")]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {

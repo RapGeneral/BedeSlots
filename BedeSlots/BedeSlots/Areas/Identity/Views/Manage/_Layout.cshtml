@@ -1,9 +1,7 @@
 ﻿@{
     Layout = "/Views/Shared/_Layout.cshtml";
 }
-
 <h2>Manage your account</h2>
-
 <div>
     <h4>Change your account settings</h4>
     <hr />
@@ -19,10 +17,8 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     @RenderSection("Scripts", required: false)
-
     <script>
         $(() => {
             const activeLinkSelector = "a[href='" + location.pathname + "']";
@@ -30,4 +26,3 @@
         });
     </script>
 }
-
