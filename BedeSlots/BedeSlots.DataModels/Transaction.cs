@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BedeSlots.DataModels.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,9 +8,11 @@ namespace BedeSlots.DataModels
     public class Transaction
     {
         public Guid Id { get; set; }
+
         public Guid TypeId { get; set; }
 
         public Guid BalanceId { get; set; }
+
         public DateTime Date { get; set; }
 
         public string Description { get; set; }
