@@ -1,0 +1,39 @@
+﻿@model IndexViewModel
+@{
+	ViewData["Title"] = "Index";
+}
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<div id="table-content">
+	<partial name="_UserGrid" model="Model.Users" />
+</div>
+
+<div class="modal" id="user-modal">
+	<div class="modal-dialog">
+		<partial name="_UserModal" model="null" />
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$('#table-content').on('click', "#tr-user-id", function () {
+			$("#user-modal").find('input[name="ID"]').val($(this).data("user-id"));
+			$('#user-modal').modal('show');
+		});
+	</script>
+    <script>
+        $(document).on("click", "#contentPager a", function () {
+            $.ajax({
+                url: $(this).attr("href"),
+                type: 'GET',
+                cache: false,
+                success: function (result) {
+                    $('#table-content').html(result);
+                }
+			});
+			history.pushState("", "", `?page=${$(this).text()}`);
+            return false;
+        });
+    </script>
+	<partial name="_ValidationScriptsPartial" />
+}
