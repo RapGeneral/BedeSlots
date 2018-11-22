@@ -4,8 +4,11 @@ using BedeSlots.DataModels;
 using BedeSlots.Services.Contracts;
 using BedeSlots.ViewModels;
 using BedeSlots.ViewModels.Enums;
+using BedeSlots.ViewModels.GlobalViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,6 +54,38 @@ namespace BedeSlots.Services
 
             var model = new TransactionViewModel(transaction);
             return model;
+        }
+
+        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int min, int max, ICollection<string> types)
+        {
+            IQueryable<TransactionViewModel> transactions = transactionRepo.All()
+                .Include(tr => tr.Amount)
+                .Include(tr => tr.Type)
+                .ThenInclude(ty => ty.Name)
+                .Select(tr => new TransactionViewModel(tr));
+
+            if (username != null)
+            {
+                transactions = transactions.Where(tr => tr.Username.Contains(username));
+            }
+
+            if (min > 0)
+            {
+                if (max == 0)
+                {
+                    throw new ArgumentOutOfRangeException("Max value must be greater than 0");
+                }
+                transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
+            }
+
+            if (!(types.First() == null))
+            {
+                transactions = transactions.Where(tr => tr.Type.ToString() == types.ToString());
+            }            
+            
+            var findedTransactions = await transactions.ToListAsync();
+
+            return findedTransactions;
         }
     }
 }
