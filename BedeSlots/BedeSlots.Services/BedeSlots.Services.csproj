@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BedeSlots.DataContext\BedeSlots.DataContext.csproj" />
+    <ProjectReference Include="..\BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj" />
     <ProjectReference Include="..\BedeSlots.ViewModels\BedeSlots.ViewModels.csproj" />
   </ItemGroup>
 

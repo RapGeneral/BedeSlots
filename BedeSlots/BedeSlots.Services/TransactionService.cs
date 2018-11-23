@@ -1,13 +1,12 @@
 ﻿using BedeSlots.DataContext;
 using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
+using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Services.Contracts;
 using BedeSlots.ViewModels;
 using BedeSlots.ViewModels.Enums;
-using BedeSlots.ViewModels.GlobalViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,16 +18,19 @@ namespace BedeSlots.Services
         private readonly IRepository<Balance> balanceRepo;
         private readonly IRepository<Transaction> transactionRepo;
         private readonly IRepository<TransactionType> transactionTypeRepo;
+        private readonly IMappingProvider mappingProvider;
 
-        public TransactionService(IRepository<Balance> balanceRepo, IRepository<Transaction> transactionRepo, IRepository<TransactionType> transactionTypeRepo)
+        public TransactionService(IRepository<Balance> balanceRepo, IRepository<Transaction> transactionRepo, IRepository<TransactionType> transactionTypeRepo, IMappingProvider mappingProvider)
         {
             this.balanceRepo = balanceRepo;
             this.transactionRepo = transactionRepo;
             this.transactionTypeRepo = transactionTypeRepo;
+            this.mappingProvider = mappingProvider;
         }
 
         public async Task<TransactionViewModel> CreateTransactionAsync(TypeOfTransaction type, string description, decimal amount, string userId)
         {
+            //fix the magic string when we have base update
             var balance = await balanceRepo.All()
                 .Include(b => b.User)
                 .Include(b => b.Currency)
@@ -46,7 +48,7 @@ namespace BedeSlots.Services
                 Date = DateTime.Now,
                 Description = description,
                 Amount = amount,
-                OpeningBalance = balance.Money                
+                OpeningBalance = balance.Money
             };
 
             transactionRepo.Add(transaction);
@@ -63,28 +65,24 @@ namespace BedeSlots.Services
                 .Include(tr => tr.Balance)
                     .ThenInclude(b => b.User)
                 .Include(tr => tr.Type)
-                .ThenInclude(ty => ty.Name);
+                    .ThenInclude(ty => ty.Name);
 
             if (username != null)
             {
-                transactions = transactions.Where(tr => tr.Balance.User.UserName.Contains(username));
+                transactions = transactions.Where(tr => tr.Balance.User.UserName.ToLower().Contains(username.ToLower()));
             }
 
-            if (min > 0)
+            if (max < min)
             {
-                if (max == 0)
-                {
-                    throw new ArgumentOutOfRangeException("Max value must be greater than 0");
-                }
-                transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
+                throw new ArgumentOutOfRangeException("Max value must be greater than 0");
+            }
+            transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
+
+            if (types.Count == 0)
+            {
+                transactions = transactions.Where(tr => types.Any(type => tr.Type.Name.ToLower() == type.ToLower()));
             }
 
-            if (!(types.First() == null))
-            {
-                //check this!
-                transactions = transactions.Where(tr => tr.Type.ToString() == types.ToString());
-            }            
-            
             var findedTransactions = await transactions
                 .Select(tr => new TransactionViewModel(tr))
                 .ToListAsync();

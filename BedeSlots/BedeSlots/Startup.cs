@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BedeSlots.DataContext;
+﻿using BedeSlots.DataContext;
 using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
+using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Providers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace BedeSlots
 {
@@ -38,7 +35,7 @@ namespace BedeSlots
             });
 
             services.AddDbContext<BedeDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+                options.UseSqlServer(Environment.GetEnvironmentVariable("MyDbConnection")));
 
             services.BuildServiceProvider().GetService<BedeDbContext>().Database.Migrate();
 
@@ -48,6 +45,7 @@ namespace BedeSlots
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
+            services.AddSingleton<IMappingProvider, MappingProvider>();
 
             services.AddMemoryCache();
 

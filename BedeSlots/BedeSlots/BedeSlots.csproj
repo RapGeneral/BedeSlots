@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BedeSlots.DataContext\BedeSlots.DataContext.csproj" />
+    <ProjectReference Include="..\BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
