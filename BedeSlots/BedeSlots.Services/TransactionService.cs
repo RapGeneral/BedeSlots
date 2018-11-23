@@ -58,15 +58,16 @@ namespace BedeSlots.Services
 
         public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int min, int max, ICollection<string> types)
         {
-            IQueryable<TransactionViewModel> transactions = transactionRepo.All()
+            IQueryable<Transaction> transactions = transactionRepo.All()
                 .Include(tr => tr.Amount)
+                .Include(tr => tr.Balance)
+                    .ThenInclude(b => b.User)
                 .Include(tr => tr.Type)
-                .ThenInclude(ty => ty.Name)
-                .Select(tr => new TransactionViewModel(tr));
+                .ThenInclude(ty => ty.Name);
 
             if (username != null)
             {
-                transactions = transactions.Where(tr => tr.Username.Contains(username));
+                transactions = transactions.Where(tr => tr.Balance.User.UserName.Contains(username));
             }
 
             if (min > 0)
@@ -80,10 +81,13 @@ namespace BedeSlots.Services
 
             if (!(types.First() == null))
             {
+                //check this!
                 transactions = transactions.Where(tr => tr.Type.ToString() == types.ToString());
             }            
             
-            var findedTransactions = await transactions.ToListAsync();
+            var findedTransactions = await transactions
+                .Select(tr => new TransactionViewModel(tr))
+                .ToListAsync();
 
             return findedTransactions;
         }
