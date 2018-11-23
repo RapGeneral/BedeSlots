@@ -3,11 +3,12 @@ using BedeSlots.DataModels;
 using BedeSlots.Providers;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
 
-namespace BedeSlots.Areas.Admin.Controllers 
+namespace BedeSlots.Areas.Admin.Controllers
 {
 	[Area("Admin")]
 	[Route("[area]/[controller]/[action]")]
@@ -24,65 +25,92 @@ namespace BedeSlots.Areas.Admin.Controllers
 		{
 			_userManager = userManager;
 		}
-        public IActionResult Index(int? page)
-        {
-            var indexViewModel = new IndexViewModel(_userManager.Users, page ?? 1, PAGE_SIZE);
-            indexViewModel.StatusMessage = StatusMessage;
+		public IActionResult Index(int? page, string username)
+		{
+			IEnumerable<User> users;
+			if (username is null)
+			{
+				users = _userManager.Users;
+			}
+			else
+			{
+				users = _userManager.Users.Where(u => u.UserName.ToLower()
+									.Contains(username.ToLower()))
+									.ToList();
+			}
 
-            return View(indexViewModel);
-        }
-        public IActionResult UserGrid(int? page)
-        {
-            var pagedUsers = _userManager.Users
-                                         .Select(u => new UserViewModel(u))
-                                         .ToPagedList(page ?? 1, PAGE_SIZE);
-            return PartialView("_UserGrid", pagedUsers);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LockUser(UserModalModelView input)
-        {
-            var user = _userManager.Users.Where(u => u.Id == input.ID).FirstOrDefault();
-            if (user is null)
-            {
-                this.StatusMessage = "Error: User not found!";
-                return this.RedirectToAction(nameof(Index));
-            }
+			var indexViewModel = new IndexViewModel(users, page ?? 1, PAGE_SIZE)
+			{
+				StatusMessage = StatusMessage
+			};
 
-            var enableLockOutResult = await _userManager.SetLockoutEnabledAsync(user, true);
-            if (!enableLockOutResult.Succeeded)
-            {
-                this.StatusMessage = "Error: Could enable the lockout on the user!";
-                return this.RedirectToAction(nameof(Index));
-            }
-            var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddYears(10));
-            if (!lockoutTimeResult.Succeeded)
-            {
-                this.StatusMessage = "Error: Could not add time to user's lockout!";
-                return this.RedirectToAction(nameof(Index));
-            }
-            this.StatusMessage = "The user has been successfully locked for 10 years!";
-            return this.RedirectToAction(nameof(Index));
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UnlockUser(UserModalModelView input)
-        {
-            var user = _userManager.Users.Where(u => u.Id == input.ID).FirstOrDefault();
-            if (user is null)
-            {
-                this.StatusMessage = "Error: User not found!";
-                return this.RedirectToAction(nameof(Index));
-            }
+			return View(indexViewModel);
+		}
+		public IActionResult UserGrid(int? page, string username)
+		{
+			IEnumerable<User> users;
+			if (username is null)
+			{
+				users = _userManager.Users;
+			}
+			else
+			{
+				users = _userManager.Users.Where(u => u.UserName.ToLower()
+									.Contains(username.ToLower()))
+									.ToList();
+			}
 
-            var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Now);
-            if (!lockoutTimeResult.Succeeded)
-            {
-                this.StatusMessage = "Error: Could not add time to user's lockout!";
-                return this.RedirectToAction(nameof(Index));
-            }
-            this.StatusMessage = "The user has been successfully unlocked!";
-            return this.RedirectToAction(nameof(Index));
-        }
-    }
+			var pagedUsers = users
+								.Select(u => new UserViewModel(u))
+								.OrderBy(u => u.UserName)
+								.ToPagedList(page ?? 1, PAGE_SIZE);
+			return PartialView("_UserGrid", pagedUsers);
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> LockUser(UserModalModelView input)
+		{
+			var user = _userManager.Users.Where(u => u.Id == input.ID).FirstOrDefault();
+			if (user is null)
+			{
+				this.StatusMessage = "Error: User not found!";
+				return this.RedirectToAction(nameof(Index));
+			}
+
+			var enableLockOutResult = await _userManager.SetLockoutEnabledAsync(user, true);
+			if (!enableLockOutResult.Succeeded)
+			{
+				this.StatusMessage = "Error: Could enable the lockout on the user!";
+				return this.RedirectToAction(nameof(Index));
+			}
+			var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddYears(10));
+			if (!lockoutTimeResult.Succeeded)
+			{
+				this.StatusMessage = "Error: Could not add time to user's lockout!";
+				return this.RedirectToAction(nameof(Index));
+			}
+			this.StatusMessage = "The user has been successfully locked for 10 years!";
+			return this.RedirectToAction(nameof(Index));
+		}
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> UnlockUser(UserModalModelView input)
+		{
+			var user = _userManager.Users.Where(u => u.Id == input.ID).FirstOrDefault();
+			if (user is null)
+			{
+				this.StatusMessage = "Error: User not found!";
+				return this.RedirectToAction(nameof(Index));
+			}
+
+			var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Now);
+			if (!lockoutTimeResult.Succeeded)
+			{
+				this.StatusMessage = "Error: Could not add time to user's lockout!";
+				return this.RedirectToAction(nameof(Index));
+			}
+			this.StatusMessage = "The user has been successfully unlocked!";
+			return this.RedirectToAction(nameof(Index));
+		}
+	}
 }

@@ -2,8 +2,15 @@
 @{
 	ViewData["Title"] = "Index";
 }
+@using BedeSlots.Areas.Admin.Controllers
 <partial name="_StatusMessage" model="Model.StatusMessage" />
-
+<br />
+<div>
+	<div id="username-input" class="col-md-4">
+		<input for="Username" class="form-control" placeholder="UserName"/>
+	</div>
+	<button id="username-filter" class="btn btn-success">Filter</button>
+</div>
 <div id="table-content">
 	<partial name="_UserGrid" model="Model.Users" />
 </div>
@@ -20,20 +27,40 @@
 			$("#user-modal").find('input[name="ID"]').val($(this).data("user-id"));
 			$('#user-modal').modal('show');
 		});
-	</script>
-    <script>
-        $(document).on("click", "#contentPager a", function () {
-            $.ajax({
-                url: $(this).attr("href"),
-                type: 'GET',
-                cache: false,
-                success: function (result) {
-                    $('#table-content').html(result);
-                }
+
+		$(document).on("click", "#content-pager a", function () {
+			const userName = $("#username-input input").val();
+			const modUrl = $(this).attr("href") + '&username=' + userName;
+			$.ajax({
+				url: modUrl,
+				type: 'GET',
+				cache: false,
+				success: function (result) {
+					$('#table-content').html(result);
+				}
 			});
-			history.pushState("", "", `?page=${$(this).text()}`);
-            return false;
-        });
-    </script>
+
+			history.pushState("", "", `?page=${$(this).text()}&username=${userName}`);
+			return false;
+		});
+
+		$("body").on("click", "button#username-filter", function () {
+			const userName = $("#username-input input").val();
+			const pathname = window.location.pathname.toLowerCase().replace(`@nameof(UsersController.Index).ToLower()`, `@nameof(UsersController.UserGrid).ToLower()`);
+			const modUrl = pathname + '?username=' + userName;
+			debugger;
+			$.ajax({
+				url: modUrl,
+				type: 'GET',
+				cache: false,
+				success: function (result) {
+					$('#table-content').html(result);
+				}
+			});
+
+			history.pushState("", "", `?username=${userName}`);
+			return false;
+		});
+	</script>
 	<partial name="_ValidationScriptsPartial" />
 }
