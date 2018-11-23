@@ -68,49 +68,46 @@ namespace BedeSlots.Areas.Admin.Controllers
 		}
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> LockUser(UserModalModelView input)
+		public async Task<IActionResult> LockUser(string userId, int durationInDays)
 		{
-			var user = _userManager.Users.Where(u => u.Id == input.ID).FirstOrDefault();
+            if(durationInDays < 1)
+            {
+                return this.PartialView("_StatusMessage", "Error: How do you expect to lock the user back in time?");
+            }
+            var user = _userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
 			if (user is null)
 			{
-				this.StatusMessage = "Error: User not found!";
-				return this.RedirectToAction(nameof(Index));
+                return this.PartialView("_StatusMessage", "Error: User not found!");
 			}
 
 			var enableLockOutResult = await _userManager.SetLockoutEnabledAsync(user, true);
 			if (!enableLockOutResult.Succeeded)
 			{
-				this.StatusMessage = "Error: Could enable the lockout on the user!";
-				return this.RedirectToAction(nameof(Index));
-			}
-			var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddYears(10));
+                return this.PartialView("_StatusMessage", "Error: Could enable the lockout on the user!");
+            }
+			var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddDays(durationInDays));
 			if (!lockoutTimeResult.Succeeded)
 			{
-				this.StatusMessage = "Error: Could not add time to user's lockout!";
-				return this.RedirectToAction(nameof(Index));
+                return this.PartialView("_StatusMessage", "Error: Could not add time to user's lockout!");
 			}
-			this.StatusMessage = "The user has been successfully locked for 10 years!";
-			return this.RedirectToAction(nameof(Index));
+            return this.PartialView("_StatusMessage", $"The user has been successfully locked for {durationInDays} days!");
 		}
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> UnlockUser(UserModalModelView input)
+		public async Task<IActionResult> UnlockUser(string userId)
 		{
-			var user = _userManager.Users.Where(u => u.Id == input.ID).FirstOrDefault();
+			var user = _userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
 			if (user is null)
 			{
-				this.StatusMessage = "Error: User not found!";
-				return this.RedirectToAction(nameof(Index));
-			}
+                return this.PartialView("_StatusMessage", "Error: User not found!");
+            }
 
 			var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Now);
 			if (!lockoutTimeResult.Succeeded)
 			{
-				this.StatusMessage = "Error: Could not add time to user's lockout!";
-				return this.RedirectToAction(nameof(Index));
+                return this.PartialView("_StatusMessage", "Error: Could not add time to user's lockout!");
 			}
-			this.StatusMessage = "The user has been successfully unlocked!";
-			return this.RedirectToAction(nameof(Index));
+            return this.PartialView("_StatusMessage", "The user has been successfully unlocked!");
 		}
 	}
 }
