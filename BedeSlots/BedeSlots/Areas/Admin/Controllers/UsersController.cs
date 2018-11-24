@@ -18,9 +18,6 @@ namespace BedeSlots.Areas.Admin.Controllers
 		private readonly IUserManager<User> _userManager;
 		private readonly int PAGE_SIZE = 1;
 
-		[TempData]
-		public string StatusMessage { get; set; }
-
 		public UsersController(IUserManager<User> userManager)
 		{
 			_userManager = userManager;
@@ -39,10 +36,7 @@ namespace BedeSlots.Areas.Admin.Controllers
 									.ToList();
 			}
 
-			var indexViewModel = new IndexViewModel(users, page ?? 1, PAGE_SIZE)
-			{
-				StatusMessage = StatusMessage
-			};
+            var indexViewModel = new IndexViewModel(users, page ?? 1, PAGE_SIZE);
 
 			return View(indexViewModel);
 		}
@@ -73,6 +67,10 @@ namespace BedeSlots.Areas.Admin.Controllers
             if(durationInDays < 1)
             {
                 return this.PartialView("_StatusMessage", "Error: How do you expect to lock the user back in time?");
+            }
+            if (durationInDays > 36000)
+            {
+                return this.PartialView("_StatusMessage", "Error: Do you even know that 36000 days are nearly 100 years?");
             }
             var user = _userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
 			if (user is null)
