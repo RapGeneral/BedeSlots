@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BedeSlots.DataModels.Abstract;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 
 namespace BedeSlots.DataModels
 {
-    public class User : IdentityUser
+    public class User : IdentityUser, IAuditable
     {
         public Guid UserCurrencyId { get; set; }
 
@@ -16,6 +17,8 @@ namespace BedeSlots.DataModels
         
         public Currency Currency { get; set; }
 
+        public DateTime CreatedOn { get; set; }
 
+        public DateTime? ModifiedOn { get; set; }
     }
 }
