@@ -1,0 +1,35 @@
+﻿@using X.PagedList;
+@using X.PagedList.Mvc.Core
+
+@model IPagedList<UserViewModel>
+
+
+<div class="panel-body">
+	<table class="table  table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>UsernameName</th>
+				<th>Email</th>
+				<th>Id</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var user in Model)
+			{
+				<tr id="tr-user-id" data-user-id="@user.ID">
+					<td>@user.UserName</td>
+					<td>@user.Email</td>
+					<td> @user.ID </td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+<div id="content-pager">
+	@Html.PagedListPager(
+		Model, page => Url.Action("UserGrid", new { page })
+	)
+</div>
+

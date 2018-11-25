@@ -14,6 +14,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.ViewModels", "BedeSlots.ViewModels\BedeSlots.ViewModels.csproj", "{F64155C8-FC5B-4843-9885-B059E2F5AC75}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedeSlots.Infrastructure", "BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj", "{FE1B1F8F-FC33-4746-AF50-5E48D2AFB4C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedeSlots.Tests", "BedeSlots.Tests\BedeSlots.Tests.csproj", "{35FF78E7-AE3E-435E-953E-39563C32D00E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +46,10 @@ Global
 		{FE1B1F8F-FC33-4746-AF50-5E48D2AFB4C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE1B1F8F-FC33-4746-AF50-5E48D2AFB4C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE1B1F8F-FC33-4746-AF50-5E48D2AFB4C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35FF78E7-AE3E-435E-953E-39563C32D00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35FF78E7-AE3E-435E-953E-39563C32D00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35FF78E7-AE3E-435E-953E-39563C32D00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35FF78E7-AE3E-435E-953E-39563C32D00E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
