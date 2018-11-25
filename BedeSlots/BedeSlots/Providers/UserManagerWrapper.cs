@@ -47,5 +47,5 @@ namespace BedeSlots.Providers
         {
             return await _userManager.GetUserAsync(claimsPrincipal);
         }
-    }
+	}
 }

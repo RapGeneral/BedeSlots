@@ -38,13 +38,12 @@ namespace BedeSlots
             });
 
             services.AddDbContext<BedeDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+                options.UseSqlServer(Environment.GetEnvironmentVariable("MyDbConnection")));
 
             services.BuildServiceProvider().GetService<BedeDbContext>().Database.Migrate();
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<BedeDbContext>();
-
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
@@ -76,7 +75,7 @@ namespace BedeSlots
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
+				routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });

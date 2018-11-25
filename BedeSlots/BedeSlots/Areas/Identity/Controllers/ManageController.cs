@@ -8,122 +8,125 @@ using System.Threading.Tasks;
 
 namespace BedeSlots.Areas.Identity.Controllers
 {
-    [Authorize]
-    [Area("Identity")]
-    [Route("[controller]/[action]")]
-    public class ManageController : Controller
-    {
-        private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signinManager;        
+	[Area("Identity")]
+	[Route("[controller]/[action]")]
+	public class ManageController : Controller
+	{
+		private readonly UserManager<User> userManager;
+		private readonly SignInManager<User> signinManager;
 
-        public ManageController(
-            UserManager<User> userManager, 
-            SignInManager<User> signinManager
-            )
-        {
-            this.userManager = userManager;
-            this.signinManager = signinManager;
-            
-        }
+		public ManageController(
+			UserManager<User> userManager,
+			SignInManager<User> signinManager
+			)
+		{
+			this.userManager = userManager;
+			this.signinManager = signinManager;
 
-        [TempData]
-        public string StatusMessage { get; set; }
+		}
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
+		[TempData]
+		public string StatusMessage { get; set; }
 
-            var model = new IndexViewModel
-            {
-                PhoneNumber = user.PhoneNumber,                
-                StatusMessage = StatusMessage
-            };
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> Index()
+		{
+			var user = await this.userManager.GetUserAsync(this.User);
+			if (user == null)
+			{
+				throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+			}
 
-            return this.View(model);
-        }
+			var model = new IndexViewModel
+			{
+				PhoneNumber = user.PhoneNumber,
+				StatusMessage = StatusMessage
+			};
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(IndexViewModel model)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(model);
-            }
+			return this.View(model);
+		}
 
-            var user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
+		[HttpPost]
+		[Authorize]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Index(IndexViewModel model)
+		{
+			if (!this.ModelState.IsValid)
+			{
+				return this.View(model);
+			}
 
-            var phoneNumber = user.PhoneNumber;
-            if (model.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await this.userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-                }
-            }
+			var user = await this.userManager.GetUserAsync(this.User);
+			if (user == null)
+			{
+				throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+			}
 
-            this.StatusMessage = "Your profile has been updated";
-            return this.RedirectToAction(nameof(Index));
-        }
+			var phoneNumber = user.PhoneNumber;
+			if (model.PhoneNumber != phoneNumber)
+			{
+				var setPhoneResult = await this.userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
+				if (!setPhoneResult.Succeeded)
+				{
+					throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
+				}
+			}
 
-        [HttpGet]
-        public async Task<IActionResult> ChangePassword()
-        {
-            var user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
+			this.StatusMessage = "Your profile has been updated";
+			return this.RedirectToAction(nameof(Index));
+		}
 
-            var model = new ChangePasswordViewModel { StatusMessage = StatusMessage };
-            return this.View(model);
-        }
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> ChangePassword()
+		{
+			var user = await this.userManager.GetUserAsync(this.User);
+			if (user == null)
+			{
+				throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+			}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(model);
-            }
+			var model = new ChangePasswordViewModel { StatusMessage = StatusMessage };
+			return this.View(model);
+		}
 
-            var user = await this.userManager.GetUserAsync(this.User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
-            }
+		[HttpPost]
+		[Authorize]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+		{
+			if (!this.ModelState.IsValid)
+			{
+				return this.View(model);
+			}
 
-            var changePasswordResult = await this.userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-            if (!changePasswordResult.Succeeded)
-            {
-                this.AddErrors(changePasswordResult);
-                return this.View(model);
-            }
+			var user = await this.userManager.GetUserAsync(this.User);
+			if (user == null)
+			{
+				throw new ApplicationException($"Unable to load user with ID '{this.userManager.GetUserId(this.User)}'.");
+			}
 
-            await this.signinManager.SignInAsync(user, isPersistent: false);
-            this.StatusMessage = "Your password has been changed.";
+			var changePasswordResult = await this.userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+			if (!changePasswordResult.Succeeded)
+			{
+				this.AddErrors(changePasswordResult);
+				return this.View(model);
+			}
 
-            return this.RedirectToAction(nameof(ChangePassword));
-        }
+			await this.signinManager.SignInAsync(user, isPersistent: false);
+			this.StatusMessage = "Your password has been changed.";
+
+			return this.RedirectToAction(nameof(ChangePassword));
+		}
 
 
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                this.ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-    }
+		private void AddErrors(IdentityResult result)
+		{
+			foreach (var error in result.Errors)
+			{
+				this.ModelState.AddModelError(string.Empty, error.Description);
+			}
+		}
+	}
 }
