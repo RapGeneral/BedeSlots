@@ -8,7 +8,7 @@ using BedeSlots.Infrastructure.MappingProvider;
 
 namespace BedeSlots.Services
 {
-    public class BankDetailsService : IBankDetailsService
+    public class BankDetailsService : IBankDetailsServices
     {
         private readonly IRepository<BankDetails> bankDetailsRepo;
         private readonly IMappingProvider mappingProvider;

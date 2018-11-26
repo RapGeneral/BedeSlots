@@ -1,9 +1,8 @@
-﻿using BedeSlots.Areas.Admin.Models;
-using BedeSlots.DataModels;
-using BedeSlots.Providers;
+﻿using BedeSlots.DataModels;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -15,49 +14,31 @@ namespace BedeSlots.Areas.Admin.Controllers
 	//[Authorize(Roles = "Administrator")]
 	public class UsersController : Controller
 	{
-		private readonly IUserManager<User> _userManager;
+        private readonly IUserServices userServices;
+        private readonly IUserManager<User> userManager;
 		private readonly int PAGE_SIZE = 1;
 
-		public UsersController(IUserManager<User> userManager)
+		public UsersController(IUserManager<User> userManager, IUserServices userServices)
 		{
-			_userManager = userManager;
+            this.userServices = userServices;
+			this.userManager = userManager;
 		}
-		public IActionResult Index(int? page, string username)
-		{
-			IEnumerable<User> users;
-			if (username is null)
-			{
-				users = _userManager.Users;
-			}
-			else
-			{
-				users = _userManager.Users.Where(u => u.UserName.ToLower()
-									.Contains(username.ToLower()))
-									.ToList();
-			}
+        public async Task<IActionResult> Index(int? page, string username)
+        {
+            var resultUsers = await userServices.SearchByUsernameAsync(username);
 
-            var indexViewModel = new IndexViewModel(users, page ?? 1, PAGE_SIZE);
+            var users = await resultUsers.ToPagedListAsync(page ?? 1, PAGE_SIZE);
 
-			return View(indexViewModel);
+			return View(users);
 		}
-		public IActionResult UserGrid(int? page, string username)
+		public async Task<IActionResult> UserGrid(int? page, string username)
 		{
-			IEnumerable<User> users;
-			if (username is null)
-			{
-				users = _userManager.Users;
-			}
-			else
-			{
-				users = _userManager.Users.Where(u => u.UserName.ToLower()
-									.Contains(username.ToLower()))
-									.ToList();
-			}
+            var resultUsers = await userServices.SearchByUsernameAsync(username);
 
-			var pagedUsers = users
-								.Select(u => new UserViewModel(u))
+            var pagedUsers = await resultUsers
 								.OrderBy(u => u.UserName)
-								.ToPagedList(page ?? 1, PAGE_SIZE);
+								.ToPagedListAsync(page ?? 1, PAGE_SIZE);
+
 			return PartialView("_UserGrid", pagedUsers);
 		}
 		[HttpPost]
@@ -72,18 +53,18 @@ namespace BedeSlots.Areas.Admin.Controllers
             {
                 return this.PartialView("_StatusMessage", "Error: Do you even know that 36000 days are nearly 100 years?");
             }
-            var user = _userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
+            var user = userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
 			if (user is null)
 			{
                 return this.PartialView("_StatusMessage", "Error: User not found!");
 			}
 
-			var enableLockOutResult = await _userManager.SetLockoutEnabledAsync(user, true);
+			var enableLockOutResult = await userManager.SetLockoutEnabledAsync(user, true);
 			if (!enableLockOutResult.Succeeded)
 			{
                 return this.PartialView("_StatusMessage", "Error: Could enable the lockout on the user!");
             }
-			var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddDays(durationInDays));
+			var lockoutTimeResult = await userManager.SetLockoutEndDateAsync(user, DateTime.Today.AddDays(durationInDays));
 			if (!lockoutTimeResult.Succeeded)
 			{
                 return this.PartialView("_StatusMessage", "Error: Could not add time to user's lockout!");
@@ -94,13 +75,13 @@ namespace BedeSlots.Areas.Admin.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> UnlockUser(string userId)
 		{
-			var user = _userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
+			var user = userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
 			if (user is null)
 			{
                 return this.PartialView("_StatusMessage", "Error: User not found!");
             }
 
-			var lockoutTimeResult = await _userManager.SetLockoutEndDateAsync(user, DateTime.Now);
+			var lockoutTimeResult = await userManager.SetLockoutEndDateAsync(user, DateTime.Now);
 			if (!lockoutTimeResult.Succeeded)
 			{
                 return this.PartialView("_StatusMessage", "Error: Could not add time to user's lockout!");

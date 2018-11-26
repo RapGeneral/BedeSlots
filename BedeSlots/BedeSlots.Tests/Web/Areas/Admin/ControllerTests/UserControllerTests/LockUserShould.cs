@@ -1,6 +1,7 @@
 ﻿using BedeSlots.Areas.Admin.Controllers;
 using BedeSlots.DataModels;
-using BedeSlots.Providers;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,6 +23,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             const string uID = "213123";
             const int validTimePeriod = 123;
             var userManagerMock = new Mock<IUserManager<User>>();
+            var userServicesMock = new Mock<IUserServices>();
             userManagerMock
                 .Setup(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), true))
                 .ReturnsAsync(IdentityResult.Success);
@@ -32,13 +34,13 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
                 .SetupGet(umm => umm.Users)
                 .Returns(new List<User> { new User { Id = uID } }.AsQueryable());
 
-            var sut = new UsersController(userManagerMock.Object);
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.LockUser(uID, validTimePeriod);
             //Assert
-            userManagerMock.Verify(s => s.Users, Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEnabledAsync(It.IsAny<User>(), true), Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEndDateAsync(It.IsAny<User>(), DateTime.Today.AddDays(validTimePeriod)), Times.Once);
+            userManagerMock.Verify(umm => umm.Users, Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), true), Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), DateTime.Today.AddDays(validTimePeriod)), Times.Once);
         }
 
         [TestMethod]
@@ -48,6 +50,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             const string uID = "213123";
             const int validTimePeriod = 123;
             var userManagerMock = new Mock<IUserManager<User>>();
+            var userServicesMock = new Mock<IUserServices>();
             userManagerMock
                 .Setup(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), true))
                 .ReturnsAsync(IdentityResult.Success);
@@ -58,7 +61,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
                 .SetupGet(umm => umm.Users)
                 .Returns(new List<User> { new User { Id = uID } }.AsQueryable());
 
-            var sut = new UsersController(userManagerMock.Object);
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.LockUser(uID, validTimePeriod);
             //Assert
@@ -73,14 +76,15 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             //Arrange
             const string uID = "213123";
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.LockUser(uID, validTimePeriod);
             //Assert
             Assert.IsInstanceOfType(result, typeof(PartialViewResult));
-            userManagerMock.Verify(s => s.Users, Times.Never);
-            userManagerMock.Verify(s => s.SetLockoutEnabledAsync(It.IsAny<User>(), It.IsAny<bool>()), Times.Never);
-            userManagerMock.Verify(s => s.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Never);
+            userManagerMock.Verify(umm => umm.Users, Times.Never);
+            userManagerMock.Verify(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), It.IsAny<bool>()), Times.Never);
+            userManagerMock.Verify(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Never);
         }
         [TestMethod]
         public async Task ReturnsPartialViewResultCallingCorrectServices_WhenUserIsNull()
@@ -89,14 +93,15 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             const string uID = "213123";
             const int validTimePeriod = 123;
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.LockUser(uID, validTimePeriod);
             //Assert
             Assert.IsInstanceOfType(result, typeof(PartialViewResult));
-            userManagerMock.Verify(s => s.Users, Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEnabledAsync(It.IsAny<User>(), It.IsAny<bool>()), Times.Never);
-            userManagerMock.Verify(s => s.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Never);
+            userManagerMock.Verify(umm => umm.Users, Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), It.IsAny<bool>()), Times.Never);
+            userManagerMock.Verify(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Never);
         }
         [TestMethod]
         public async Task ReturnsPartialViewResultCallingCorrectServices_WhenSetLockoutDateFails()
@@ -105,6 +110,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             const string uID = "213123";
             const int validTimePeriod = 123;
             var userManagerMock = new Mock<IUserManager<User>>();
+            var userServicesMock = new Mock<IUserServices>();
             userManagerMock
                 .Setup(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), true))
                 .ReturnsAsync(IdentityResult.Success);
@@ -115,14 +121,14 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
                 .SetupGet(umm => umm.Users)
                 .Returns(new List<User> { new User { Id = uID } }.AsQueryable());
 
-            var sut = new UsersController(userManagerMock.Object);
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.LockUser(uID, validTimePeriod);
             //Assert
             Assert.IsInstanceOfType(result, typeof(PartialViewResult));
-            userManagerMock.Verify(s => s.Users, Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEnabledAsync(It.IsAny<User>(), true), Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEndDateAsync(It.IsAny<User>(), DateTime.Today.AddDays(validTimePeriod)), Times.Once);
+            userManagerMock.Verify(umm => umm.Users, Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), true), Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), DateTime.Today.AddDays(validTimePeriod)), Times.Once);
         }
         [TestMethod]
         public async Task ReturnsPartialViewResultCallingCorrectServices_WhenSetLockoutFails()
@@ -131,20 +137,21 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             const string uID = "213123";
             const int validTimePeriod = 123;
             var userManagerMock = new Mock<IUserManager<User>>();
+            var userServicesMock = new Mock<IUserServices>();
             userManagerMock
                 .Setup(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), true))
                 .ReturnsAsync(IdentityResult.Failed());
             userManagerMock
                 .SetupGet(umm => umm.Users)
                 .Returns(new List<User> { new User { Id = uID } }.AsQueryable());
-            var sut = new UsersController(userManagerMock.Object);
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.LockUser(uID, validTimePeriod);
             //Assert
             Assert.IsInstanceOfType(result, typeof(PartialViewResult));
-            userManagerMock.Verify(s => s.Users, Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEnabledAsync(It.IsAny<User>(), true), Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Never);
+            userManagerMock.Verify(umm => umm.Users, Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEnabledAsync(It.IsAny<User>(), true), Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Never);
         }
     }
 }

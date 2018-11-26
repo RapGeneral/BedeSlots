@@ -1,11 +1,12 @@
-﻿@model IndexViewModel
+﻿@model IPagedList<UserViewModel>
 @{
     ViewData["Title"] = "Index";
 }
+
+@using X.PagedList;
 @using BedeSlots.Areas.Admin.Controllers
 
 <div id="status-message">
-    <partial name="_StatusMessage" model="Model.StatusMessage" />
 </div>
 
 <br />
@@ -17,12 +18,12 @@
     <button id="username-filter" class="btn btn-success">Filter</button>
 </div>
 <div id="table-content">
-    <partial name="_UserGrid" model="Model.Users" />
+    <partial name="_UserGrid" model="Model" />
 </div>
 
 <div class="modal" id="user-modal">
     <div class="modal-dialog">
-        <partial name="_UserModal"/>
+        <partial name="_UserModal" />
     </div>
 </div>
 

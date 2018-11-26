@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace BedeSlots.Services
 {
-    public class TransactionService : ITransactionService
+    public class TransactionServices : ITransactionServices
     {
         private readonly IRepository<Balance> balanceRepo;
         private readonly IRepository<Transaction> transactionRepo;
         private readonly IRepository<TransactionType> transactionTypeRepo;
         private readonly IMappingProvider mappingProvider;
 
-        public TransactionService(IRepository<Balance> balanceRepo, IRepository<Transaction> transactionRepo, IRepository<TransactionType> transactionTypeRepo, IMappingProvider mappingProvider)
+        public TransactionServices(IRepository<Balance> balanceRepo, IRepository<Transaction> transactionRepo, IRepository<TransactionType> transactionTypeRepo, IMappingProvider mappingProvider)
         {
             this.balanceRepo = balanceRepo;
             this.transactionRepo = transactionRepo;

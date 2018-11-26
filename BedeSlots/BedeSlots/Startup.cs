@@ -1,8 +1,11 @@
-﻿using BedeSlots.DataContext;
+﻿using AutoMapper;
+using BedeSlots.DataContext;
 using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
 using BedeSlots.Infrastructure.MappingProvider;
-using BedeSlots.Providers;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Services;
+using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,19 +37,21 @@ namespace BedeSlots
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<BedeDbContext>(options =>
+            services.AddDbContext<BedeDBContext>(options =>
                 options.UseSqlServer(Environment.GetEnvironmentVariable("MyDbConnection")));
 
-            services.BuildServiceProvider().GetService<BedeDbContext>().Database.Migrate();
+            services.BuildServiceProvider().GetService<BedeDBContext>().Database.Migrate();
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<BedeDbContext>();
+                .AddEntityFrameworkStores<BedeDBContext>();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
-            services.AddSingleton<IMappingProvider, MappingProvider>();
+            services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IMappingProvider, MappingProvider>();
 
             services.AddMemoryCache();
+            services.AddAutoMapper();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BedeSlots.DataContext.Migrations
 {
-    [DbContext(typeof(BedeDbContext))]
+    [DbContext(typeof(BedeDBContext))]
     [Migration("20181116121025_fixed-transaction")]
     partial class fixedtransaction
     {

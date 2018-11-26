@@ -1,10 +1,14 @@
 ﻿using BedeSlots.Areas.Admin.Controllers;
-using BedeSlots.Areas.Admin.Models;
 using BedeSlots.DataModels;
-using BedeSlots.Providers;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Services.Contracts;
+using BedeSlots.ViewModels.GlobalViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using X.PagedList;
 
 namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
 {
@@ -12,37 +16,49 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
     public class IndexActionShould
     {
         [TestMethod]
-        public void CallCorrectServiceMethod()
+        public async Task CallCorrectServiceMethod()
         {
             //Arrange
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            userServicesMock
+                .Setup(usm => usm.SearchByUsernameAsync(null))
+                .ReturnsAsync(new List<UserViewModel>());
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
-            var result = sut.Index(null, null);
+            var result = await sut.Index(null, null);
             //Assert
-            userManagerMock.Verify(s => s.Users, Times.Once);
+            userServicesMock.Verify(usm => usm.SearchByUsernameAsync(null), Times.Once);
         }
 
         [TestMethod]
-        public void ReturnCorrectViewModel()
+        public async Task ReturnCorrectViewModel()
         {
             //Arrange
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            userServicesMock
+                .Setup(usm => usm.SearchByUsernameAsync(null))
+                .ReturnsAsync(new List<UserViewModel>());
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Acts
-            var result = sut.Index(null, null) as ViewResult;
+            var result = await sut.Index(null, null) as ViewResult;
             //Assert
-            Assert.IsInstanceOfType(result.Model, typeof(IndexViewModel));
+            Assert.IsInstanceOfType(result.Model, typeof(IPagedList<UserViewModel>));
         }
 
         [TestMethod]
-        public void ReturnsCorrectViewResult()
+        public async Task ReturnsCorrectViewResult()
         {
             //Arrange
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            userServicesMock
+                .Setup(usm => usm.SearchByUsernameAsync(null))
+                .ReturnsAsync(new List<UserViewModel>());
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
-            var result = sut.Index(null, null);
+            var result = await sut.Index(null, null);
             //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
