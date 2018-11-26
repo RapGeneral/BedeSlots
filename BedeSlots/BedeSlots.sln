@@ -13,8 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.Services", "BedeS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.ViewModels", "BedeSlots.ViewModels\BedeSlots.ViewModels.csproj", "{F64155C8-FC5B-4843-9885-B059E2F5AC75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedeSlots.Infrastructure", "BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj", "{FE1B1F8F-FC33-4746-AF50-5E48D2AFB4C5}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedeSlots.Tests", "BedeSlots.Tests\BedeSlots.Tests.csproj", "{35FF78E7-AE3E-435E-953E-39563C32D00E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.Infrastructure", "BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj", "{FE1B1F8F-FC33-4746-AF50-5E48D2AFB4C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.Tests", "BedeSlots.Tests\BedeSlots.Tests.csproj", "{35FF78E7-AE3E-435E-953E-39563C32D00E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

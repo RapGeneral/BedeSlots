@@ -23,6 +23,5 @@ namespace BedeSlots.ViewModels
         public string Description { get; set; }
 
         public string Username { get; set; }
-
     }
 }

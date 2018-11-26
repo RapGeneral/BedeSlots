@@ -10,6 +10,5 @@ namespace BedeSlots.ViewModels.GlobalViewModels
         public string Email { get; set; }
         [Required]
         public string ID { get; set; }
-
     }
 }
