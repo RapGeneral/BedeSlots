@@ -1,8 +1,5 @@
-﻿using BedeSlots.DataModels;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace BedeSlots.ViewModels.GlobalViewModels
 {

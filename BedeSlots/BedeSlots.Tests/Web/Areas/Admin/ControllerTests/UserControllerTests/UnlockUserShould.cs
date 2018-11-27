@@ -1,6 +1,7 @@
 ﻿using BedeSlots.Areas.Admin.Controllers;
 using BedeSlots.DataModels;
-using BedeSlots.Providers;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,6 +22,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             //Arrange
             const string uID = "213123";
             var userManagerMock = new Mock<IUserManager<User>>();
+            var userServicesMock = new Mock<IUserServices>();
             userManagerMock
                 .Setup(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()))
                 .ReturnsAsync(IdentityResult.Success);
@@ -28,12 +30,12 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
                 .SetupGet(umm => umm.Users)
                 .Returns(new List<User> { new User { Id = uID } }.AsQueryable());
 
-            var sut = new UsersController(userManagerMock.Object);
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.UnlockUser(uID);
             //Assert
-            userManagerMock.Verify(s => s.Users, Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Once);
+            userManagerMock.Verify(umm => umm.Users, Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Once);
         }
 
         [TestMethod]
@@ -44,6 +46,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             //Arrange
             const string uID = "213123";
             var userManagerMock = new Mock<IUserManager<User>>();
+            var userServicesMock = new Mock<IUserServices>();
             userManagerMock
                 .Setup(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()))
                 .ReturnsAsync(IdentityResult.Success);
@@ -52,7 +55,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
                 .SetupGet(umm => umm.Users)
                 .Returns(new List<User> { user }.AsQueryable());
 
-            var sut = new UsersController(userManagerMock.Object);
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.UnlockUser(uID);
             //Assert
@@ -65,6 +68,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             //Arrange
             const string uID = "213123";
             var userManagerMock = new Mock<IUserManager<User>>();
+            var userServicesMock = new Mock<IUserServices>();
             userManagerMock
                 .Setup(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()))
                 .ReturnsAsync(IdentityResult.Success);
@@ -72,7 +76,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
                 .SetupGet(umm => umm.Users)
                 .Returns(new List<User> { new User { Id = uID } }.AsQueryable());
 
-            var sut = new UsersController(userManagerMock.Object);
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.UnlockUser(uID);
             //Assert
@@ -84,13 +88,14 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             //Arrange
             const string uID = "213123";
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.UnlockUser(uID);
             //Assert
             Assert.IsInstanceOfType(result, typeof(PartialViewResult));
-            userManagerMock.Verify(s => s.Users, Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Never);
+            userManagerMock.Verify(umm => umm.Users, Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Never);
         }
         [TestMethod]
         public async Task ReturnsPartialViewResultCallingCorrectServices_WhenSetLockoutDateFails()
@@ -98,19 +103,20 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
             //Arrange
             const string uID = "213123";
             var userManagerMock = new Mock<IUserManager<User>>();
+            var userServicesMock = new Mock<IUserServices>();
             userManagerMock
                 .Setup(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()))
                 .ReturnsAsync(IdentityResult.Failed());
             userManagerMock
                 .SetupGet(umm => umm.Users)
                 .Returns(new List<User> { new User { Id = uID } }.AsQueryable());
-            var sut = new UsersController(userManagerMock.Object);
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
             var result = await sut.UnlockUser(uID) as PartialViewResult;
             //Assert
             Assert.IsInstanceOfType(result, typeof(PartialViewResult));
-            userManagerMock.Verify(s => s.Users, Times.Once);
-            userManagerMock.Verify(s => s.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Once);
+            userManagerMock.Verify(umm => umm.Users, Times.Once);
+            userManagerMock.Verify(umm => umm.SetLockoutEndDateAsync(It.IsAny<User>(), It.IsAny<DateTimeOffset>()), Times.Once);
         }
     }
 }

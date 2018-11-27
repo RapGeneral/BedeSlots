@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
@@ -15,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Identity\Models\" />
     <Folder Include="Areas\Identity\Controllers\" />
     <Folder Include="Areas\Identity\Views" />
@@ -23,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BedeSlots.DataContext\BedeSlots.DataContext.csproj" />
     <ProjectReference Include="..\BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj" />
+    <ProjectReference Include="..\BedeSlots.Services\BedeSlots.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

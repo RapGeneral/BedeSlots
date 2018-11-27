@@ -1,5 +1,4 @@
-﻿using BedeSlots.DataContext;
-using BedeSlots.DataContext.Repository;
+﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
 using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Services.Contracts;
@@ -13,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace BedeSlots.Services
 {
-    public class TransactionService : ITransactionService
+    public class TransactionServices : ITransactionServices
     {
         private readonly IRepository<Balance> balanceRepo;
         private readonly IRepository<Transaction> transactionRepo;
         private readonly IRepository<TransactionType> transactionTypeRepo;
         private readonly IMappingProvider mappingProvider;
 
-        public TransactionService(IRepository<Balance> balanceRepo, IRepository<Transaction> transactionRepo, IRepository<TransactionType> transactionTypeRepo, IMappingProvider mappingProvider)
+        public TransactionServices(IRepository<Balance> balanceRepo, IRepository<Transaction> transactionRepo, IRepository<TransactionType> transactionTypeRepo, IMappingProvider mappingProvider)
         {
             this.balanceRepo = balanceRepo;
             this.transactionRepo = transactionRepo;
@@ -54,7 +53,8 @@ namespace BedeSlots.Services
             transactionRepo.Add(transaction);
             await transactionRepo.SaveAsync();
 
-            var model = new TransactionViewModel(transaction);
+            var model = mappingProvider.MapTo<TransactionViewModel>(transaction);
+
             return model;
         }
 
@@ -83,11 +83,9 @@ namespace BedeSlots.Services
                 transactions = transactions.Where(tr => types.Any(type => tr.Type.Name.ToLower() == type.ToLower()));
             }
 
-            var findedTransactions = await transactions
-                .Select(tr => new TransactionViewModel(tr))
-                .ToListAsync();
+            var foundedTrnasaciton = await transactions.ToListAsync();
 
-            return findedTransactions;
+            return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundedTrnasaciton);
         }
     }
 }

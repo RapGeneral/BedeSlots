@@ -9,9 +9,9 @@ namespace BedeSlots.DataContext.Repository
 	public class Repository<T> : IRepository<T> 
 		where T : class
 	{
-		private readonly BedeDbContext context;
+		private readonly BedeDBContext context;
 
-		public Repository(BedeDbContext context)
+		public Repository(BedeDBContext context)
 		{
 			this.context = context;
 		}

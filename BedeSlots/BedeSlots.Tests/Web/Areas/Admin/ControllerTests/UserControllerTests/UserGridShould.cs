@@ -1,10 +1,13 @@
 ﻿using BedeSlots.Areas.Admin.Controllers;
-using BedeSlots.Areas.Admin.Models;
 using BedeSlots.DataModels;
-using BedeSlots.Providers;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Services.Contracts;
+using BedeSlots.ViewModels.GlobalViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using X.PagedList;
 
 namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
@@ -13,37 +16,52 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
     public class UserGridShould
     {
         [TestMethod]
-        public void CallCorrectServiceMethod()
+        public async Task CallCorrectServiceMethod()
         {
             //Arrange
+            const string userName = "somename";
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            userServicesMock
+                .Setup(usm => usm.SearchByUsernameAsync(userName))
+                .ReturnsAsync(new List<UserViewModel>());
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
-            var result = sut.UserGrid(21, "randomUName") as PartialViewResult;
+            var result = await sut.UserGrid(21, userName) as PartialViewResult;
             //Assert
-            userManagerMock.Verify(s => s.Users, Times.Once);
+            userServicesMock.Verify(usm => usm.SearchByUsernameAsync(userName), Times.Once);
         }
 
         [TestMethod]
-        public void ReturnCorrectViewModel()
+        public async Task ReturnCorrectViewModel()
         {
             //Arrange
+            const string userName = "somename";
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            userServicesMock
+                .Setup(usm => usm.SearchByUsernameAsync(userName))
+                .ReturnsAsync(new List<UserViewModel>());
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Acts
-            var result = sut.UserGrid(21, "randomUName") as PartialViewResult;
+            var result = await sut.UserGrid(21, userName) as PartialViewResult;
             //Assert
             Assert.IsInstanceOfType(result.Model, typeof(IPagedList<UserViewModel>));
         }
 
         [TestMethod]
-        public void ReturnsCorrectViewResult()
+        public async Task ReturnsCorrectViewResult()
         {
             //Arrange
+            const string userName = "somename";
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new UsersController(userManagerMock.Object);
+            var userServicesMock = new Mock<IUserServices>();
+            userServicesMock
+                .Setup(usm => usm.SearchByUsernameAsync(userName))
+                .ReturnsAsync(new List<UserViewModel>());
+            var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
-            var result = sut.UserGrid(21, "randomUName");
+            var result = await sut.UserGrid(21, userName);
             //Assert
             Assert.IsInstanceOfType(result, typeof(PartialViewResult));
         }

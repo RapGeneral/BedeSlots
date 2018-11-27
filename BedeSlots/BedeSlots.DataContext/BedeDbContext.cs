@@ -5,7 +5,7 @@ using System;
 
 namespace BedeSlots.DataContext
 {
-    public class BedeDbContext : IdentityDbContext<User>
+    public class BedeDBContext : IdentityDbContext<User>
     {
         public DbSet<Balance> Balances { get; set; }
 
@@ -21,7 +21,7 @@ namespace BedeSlots.DataContext
 
         public DbSet<UserBankDetails> UserBankDetails { get; set; }
 
-        public BedeDbContext(DbContextOptions<BedeDbContext> options) : base(options)
+        public BedeDBContext(DbContextOptions<BedeDBContext> options) : base(options)
         {
 
         }

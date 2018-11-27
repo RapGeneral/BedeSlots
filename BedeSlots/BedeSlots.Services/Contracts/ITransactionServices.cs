@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BedeSlots.Services.Contracts
 {
-    public interface ITransactionService
+    public interface ITransactionServices
     {
         Task<TransactionViewModel> CreateTransactionAsync(TypeOfTransaction type, string description, decimal amount, string userId);
         Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int min, int max, ICollection<string> types);
