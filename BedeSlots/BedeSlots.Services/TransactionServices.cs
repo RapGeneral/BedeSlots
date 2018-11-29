@@ -2,8 +2,8 @@
 using BedeSlots.DataModels;
 using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels;
 using BedeSlots.ViewModels.Enums;
+using BedeSlots.ViewModels.GlobalViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -58,25 +58,35 @@ namespace BedeSlots.Services
             return model;
         }
 
-        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int min, int max, ICollection<string> types)
+        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int? min, int? max, ICollection<string> types)
         {
             IQueryable<Transaction> transactions = transactionRepo.All()
-                .Include(tr => tr.Amount)
                 .Include(tr => tr.Balance)
                     .ThenInclude(b => b.User)
-                .Include(tr => tr.Type)
-                    .ThenInclude(ty => ty.Name);
+                .Include(tr => tr.Type);
 
             if (username != null)
             {
                 transactions = transactions.Where(tr => tr.Balance.User.UserName.ToLower().Contains(username.ToLower()));
             }
 
-            if (max < min)
+            if (min == null && max != null)
             {
-                throw new ArgumentOutOfRangeException("Max value must be greater than 0");
+                transactions = transactions.Where(tr => tr.Amount < max);
             }
-            transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
+            if (max == null && min != null)
+            {
+                transactions = transactions.Where(tr => tr.Amount > min);
+            }
+            if (min != null && max != null)
+            {
+                if (max < min)
+                {
+                    throw new ArgumentOutOfRangeException("Max value can`t be greater than min value!");
+                }
+                transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
+            }
+            
 
             if (types.Count == 0)
             {

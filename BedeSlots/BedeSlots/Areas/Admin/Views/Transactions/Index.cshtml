@@ -1,0 +1,82 @@
+﻿@model IPagedList<TransactionViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+@using X.PagedList;
+@using BedeSlots.Areas.Admin.Controllers
+
+<div id="status-message">
+</div>
+
+<br />
+
+<div>
+    <div id="all-filter">
+        <div id="username-input" class="col-md-3">
+            <input class="form-control" placeholder="Username" />
+        </div>
+        <div id="minvalue-input" class="col-md-3">
+            <input class="form-control" placeholder="Minimum Amount" />
+        </div>
+        <div id="maxvalue-input" class="col-md-3">
+            <input class="form-control" placeholder="Maximum Amount" />
+        </div>
+        <div id="types-input" class="col-md-3">
+            <input class="form-control" placeholder="Types" />
+        </div>
+    </div>
+    <button id="all-filter" class="btn btn-success">Filter</button>
+</div>
+
+<div id="table-content">
+    <partial name="_TransactionGrid" model="Model" />
+</div>
+
+
+@section Scripts {
+    <script>      
+        
+		$(document).on("click", "#content-pager a", function () {
+            const userName = $("#username-input input").val();
+            const minValue = $("minvalue-input input").val();
+            const maxValue = $("maxvalue-input input").val();
+            const types = $("types-input input").val();
+            const modUrl = $(this).attr("href") + '&username=' + userName + minValue + maxValue + '&types=' + types;
+			$.ajax({
+				url: modUrl,
+				type: 'GET',
+				cache: false,
+				success: function (result) {
+					$('#table-content').html(result);
+				}
+			});
+
+			history.pushState("", "", `?page=${$(this).text()}&username=${userName}${minValue}${maxValue}&types=${types}`);
+			return false;
+		});
+
+        $("button#username-filter").click(function () {
+            const userName = $("#username-input input").val();
+            const minValue = $("minvalue-input input").val();
+            const maxValue = $("maxvalue-input input").val();
+            const types = $("types-input input").val();
+            const pathname = window.location.pathname.toLowerCase().replace(`@nameof(TransactionsController.Index).ToLower()`, `@nameof(TransactionsController.TransactionGrid).ToLower()`);
+            const modUrl = pathname + '?username=' + userName + minValue + maxValue + '?types=' + types;
+			$.ajax({
+				url: modUrl,
+				type: 'GET',
+				cache: false,
+				success: function (result) {
+					$('#table-content').html(result);
+				}
+			});
+
+            history.pushState("", "", `?username=${userName}${minValue}${maxValue}'?types=${types}`);
+			return false;
+        });
+        
+        
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

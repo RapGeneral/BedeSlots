@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BedeSlots.DataModels;
-using BedeSlots.ViewModels;
 using BedeSlots.ViewModels.Enums;
+using BedeSlots.ViewModels.GlobalViewModels;
 using System;
 
 namespace BedeSlots.Infrastructure.MappingProvider.Mappings
