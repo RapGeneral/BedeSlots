@@ -69,7 +69,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 		{
 			if (this.ModelState.IsValid)
 			{
-				var user = new User { UserName = model.Email, Email = model.Email };
+				var user = new User { UserName = model.Username, Email = model.Email, DateOfBirth = model.DateOfBirth };
 				var result = await this.userManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{

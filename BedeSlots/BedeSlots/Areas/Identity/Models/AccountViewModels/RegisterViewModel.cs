@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BedeSlots.Areas.Identity.Models.AccountViewModels.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,6 +9,11 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels
 {
     public class RegisterViewModel
     {
+        [Required]
+        [StringLength(25, ErrorMessage = "The username must be max 25 charactes long.")]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -23,5 +29,11 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+                
+        [Required]
+        [MinimumAge(18)]    
+        [Display(Name = "Date of Birth")]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime DateOfBirth { get; set; }
     }
 }
