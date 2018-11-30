@@ -1,0 +1,117 @@
+﻿@model IPagedList<UserViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+@using X.PagedList;
+@using BedeSlots.Areas.Admin.Controllers
+
+<div id="status-message">
+</div>
+
+<br />
+
+<div>
+    <div id="username-input" class="col-md-4">
+        <input class="form-control" placeholder="UserName" />
+    </div>
+    <button id="username-filter" class="btn btn-success">Filter</button>
+</div>
+<div id="table-content">
+    <partial name="_UserGrid" model="Model" />
+</div>
+
+<div class="modal" id="user-modal">
+    <div class="modal-dialog">
+        <partial name="_UserModal" />
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let userId;
+        $('#table-content').on('click', "#tr-user-id", function () {
+            debugger;
+			userId = $(this).data("user-id");
+			$('#user-modal').modal('show');
+		});
+
+		$(document).on("click", "#content-pager a", function () {
+			const userName = $("#username-input input").val();
+			const modUrl = $(this).attr("href") + '&username=' + userName;
+			$.ajax({
+				url: modUrl,
+				type: 'GET',
+				cache: false,
+				success: function (result) {
+					$('#table-content').html(result);
+				}
+			});
+
+			history.pushState("", "", `?page=${$(this).text()}&username=${userName}`);
+			return false;
+		});
+
+        $("button#username-filter").click(function () {
+			const userName = $("#username-input input").val();
+			const pathname = window.location.pathname.toLowerCase().replace(`@nameof(UsersController.Index).ToLower()`, `@nameof(UsersController.UserGrid).ToLower()`);
+			const modUrl = pathname + '?username=' + userName;
+			$.ajax({
+				url: modUrl,
+				type: 'GET',
+				cache: false,
+				success: function (result) {
+					$('#table-content').html(result);
+				}
+			});
+
+			history.pushState("", "", `?username=${userName}`);
+			return false;
+        });
+
+        $("button#lock-user").click(function () {
+            const url = window.location.href.toLowerCase().replace(`@nameof(UsersController.Index).ToLower()`, `@nameof(UsersController.LockUser).ToLower()`);
+			$.ajax({
+				url: url,
+                type: 'POST',
+                cache: false,
+                data: jQuery.param({
+                    durationInDays: document.getElementById("duration-in-days").value,
+                    userId: userId,
+                    __RequestVerificationToken: getToken()
+                }),
+                success: function (result) {
+                    debugger;
+                    $('#user-modal').modal('hide');
+					$('#status-message').html(result);
+				}
+			});
+        });
+
+        $("button#unlock-user").click(function () {
+            const url = window.location.href.toLowerCase().replace(`@nameof(UsersController.Index).ToLower()`, `@nameof(UsersController.UnlockUser).ToLower()`);
+            debugger;
+			$.ajax({
+				url: url,
+                type: 'POST',
+                cache: false,
+                data: jQuery.param({
+                    userId: userId,
+                    __RequestVerificationToken: getToken()
+                }),
+                success: function (result) {
+                    $('#user-modal').modal('hide');
+					$('#status-message').html(result);
+				}
+			});
+        });
+
+        function getToken()
+        {
+            var token = '@Html.AntiForgeryToken()';
+            token = $(token).val();
+            return token;
+        }
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

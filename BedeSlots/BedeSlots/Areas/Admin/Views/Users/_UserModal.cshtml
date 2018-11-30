@@ -1,0 +1,15 @@
+﻿<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title text-center">Manage user</h4>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input class="form-control input-validation-error" type="number" data-val="true" data-val-range="The lock duration should be between 1 and 36000 days!" data-val-range-max="36000" data-val-range-min="1" data-val-required="The lock duration is required." id="duration-in-days" name="duration-in-days" value="" aria-describedby="duration-in-days-error" aria-invalid="true" placeholder="Lock duration">
+            <span class="text-danger field-validation-error" data-valmsg-for="duration-in-days" data-valmsg-replace="true">The lock duration should be between 1 and 36000 days!</span>
+        </form>
+        <button id="lock-user" class="btn btn-danger">Lock User</button>
+        <button id="unlock-user" class="btn btn-success pull-right">Unlock User</button>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BedeSlots.DataContext\BedeSlots.DataContext.csproj" />
+    <ProjectReference Include="..\BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj" />
+    <ProjectReference Include="..\BedeSlots.ViewModels\BedeSlots.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>
