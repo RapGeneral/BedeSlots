@@ -32,6 +32,16 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <p>Note: you can not change your currency once set!</p>
+                <label asp-for="CurrencyName"></label>
+                <select asp-for="CurrencyName" class="form-control">
+                    <option value="EUR"></option>
+                    <option value="USD"></option>
+                    <option value="GBP"></option>
+                    <option value="BGN"></option>                   
+                </select>                
+            </div>
+            <div class="form-group">
                 <label asp-for="DateOfBirth"></label>
                 <input asp-for="DateOfBirth" class="form-control" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>

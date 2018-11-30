@@ -1,4 +1,5 @@
 ﻿using BedeSlots.Areas.Identity.Models.AccountViewModels.Validation;
+using BedeSlots.DataModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +30,10 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-                
+        
+        [Required]
+        public string CurrencyName { get; set; }
+
         [Required]
         [MinimumAge(18)]    
         [Display(Name = "Date of Birth")]
