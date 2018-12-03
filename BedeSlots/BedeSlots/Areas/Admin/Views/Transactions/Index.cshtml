@@ -39,10 +39,10 @@
         
 		$(document).on("click", "#content-pager a", function () {
             const userName = $("#username-input input").val();
-            const minValue = $("minvalue-input input").val();
-            const maxValue = $("maxvalue-input input").val();
-            const types = $("types-input input").val();
-            const modUrl = $(this).attr("href") + '&username=' + userName + minValue + maxValue + '&types=' + types;
+            const minValue = $("#minvalue-input input").val();
+            const maxValue = $("#maxvalue-input input").val();
+            const types = $("#types-input input").val();
+            const modUrl = $(this).attr("href") + '&username=' + userName + '&minValue=' + minValue + '&maxValue=' + maxValue + '&types=' + types;
 			$.ajax({
 				url: modUrl,
 				type: 'GET',
@@ -52,17 +52,17 @@
 				}
 			});
 
-			history.pushState("", "", `?page=${$(this).text()}&username=${userName}${minValue}${maxValue}&types=${types}`);
+			history.pushState("", "", `?page=${$(this).text()}&username=${userName}&minValue=${minValue}&maxValue=${maxValue}&types=${types}`);
 			return false;
 		});
 
-        $("button#username-filter").click(function () {
+        $("button#all-filter").click(function () {
             const userName = $("#username-input input").val();
-            const minValue = $("minvalue-input input").val();
-            const maxValue = $("maxvalue-input input").val();
-            const types = $("types-input input").val();
+            const minValue = $("#minvalue-input input").val();
+            const maxValue = $("#maxvalue-input input").val();
+            const types = $("#types-input input").val();
             const pathname = window.location.pathname.toLowerCase().replace(`@nameof(TransactionsController.Index).ToLower()`, `@nameof(TransactionsController.TransactionGrid).ToLower()`);
-            const modUrl = pathname + '?username=' + userName + minValue + maxValue + '?types=' + types;
+            const modUrl = pathname + '?username=' + userName + '&minValue=' + minValue + '&maxValue=' + maxValue + '&types=' + types;
 			$.ajax({
 				url: modUrl,
 				type: 'GET',
@@ -72,7 +72,7 @@
 				}
 			});
 
-            history.pushState("", "", `?username=${userName}${minValue}${maxValue}'?types=${types}`);
+            history.pushState("", "", `?username=${userName}&minValue=${minValue}&maxValue=${maxValue}&types=${types}`);
 			return false;
         });
         
