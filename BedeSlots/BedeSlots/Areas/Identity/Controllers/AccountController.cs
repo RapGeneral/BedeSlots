@@ -102,7 +102,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 			}
 
 			// If we got this far, something failed, redisplay form
-			return this.View(model);
+			return this.View();
 		}
 
 		[HttpPost]
