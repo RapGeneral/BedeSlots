@@ -1,9 +1,14 @@
 ﻿using BedeSlots.Areas.Identity.Models.AccountViewModels;
 using BedeSlots.DataModels;
+using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BedeSlots.Areas.Identity.Controllers
@@ -14,13 +19,19 @@ namespace BedeSlots.Areas.Identity.Controllers
 	{
 		private readonly UserManager<User> userManager;
 		private readonly SignInManager<User> signinManager;
+        private readonly IMemoryCache memoryCache;
+        private readonly ICurrencyServices currencyServices;
 
 		public AccountController(
 			UserManager<User> userManager,
-			SignInManager<User> signInManager)
+			SignInManager<User> signInManager,
+            IMemoryCache memoryCache,
+            ICurrencyServices currencyServices)
 		{
 			this.userManager = userManager;
 			this.signinManager = signInManager;
+            this.memoryCache = memoryCache;
+            this.currencyServices = currencyServices;
 		}
 
 		[TempData]
@@ -58,9 +69,19 @@ namespace BedeSlots.Areas.Identity.Controllers
 			return this.View(model);
 		}
 
-		public IActionResult Register()
+		public async Task<IActionResult> Register()
 		{
-			return this.View();
+            var cachedSelectListCurrencies = await memoryCache.GetOrCreateAsync("Currencies", async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(4);
+                var currencies = await currencyServices.GetCurrenciesAsync();
+                return currencies.Select(c => new SelectListItem(c, c));
+            });
+            var newRegister = new RegisterViewModel
+            {
+                Currencies = cachedSelectListCurrencies
+            };
+            return View(newRegister);            
 		}
 
 		[HttpPost]
@@ -69,7 +90,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 		{
 			if (this.ModelState.IsValid)
 			{
-				var user = new User { UserName = model.Email, Email = model.Email };
+				var user = new User { UserName = model.Username, Email = model.Email, DateOfBirth = model.DateOfBirth };
 				var result = await this.userManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
@@ -81,7 +102,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 			}
 
 			// If we got this far, something failed, redisplay form
-			return this.View(model);
+			return this.View();
 		}
 
 		[HttpPost]

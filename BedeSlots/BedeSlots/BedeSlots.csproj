@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <ApplicationInsightsResourceId>/subscriptions/a1e6e96b-736d-4622-b718-de35ff81d3bb/resourcegroups/BedeSlots-rg/providers/microsoft.insights/components/BedeSlots</ApplicationInsightsResourceId>
-    <ApplicationInsightsAnnotationResourceId>/subscriptions/a1e6e96b-736d-4622-b718-de35ff81d3bb/resourcegroups/BedeSlots-rg/providers/microsoft.insights/components/BedeSlots</ApplicationInsightsAnnotationResourceId>
+    <ApplicationInsightsResourceId>/subscriptions/6eb32d9d-1ff5-40b7-8530-de882e81b041/resourcegroups/BedeSlots-rg/providers/microsoft.insights/components/BedeSlots</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/6eb32d9d-1ff5-40b7-8530-de882e81b041/resourceGroups/BedeSlots-rg/providers/Microsoft.Insights/components/BedeSlots</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Identity\Models\" />
     <Folder Include="Areas\Identity\Controllers\" />
     <Folder Include="Areas\Identity\Views" />
   </ItemGroup>

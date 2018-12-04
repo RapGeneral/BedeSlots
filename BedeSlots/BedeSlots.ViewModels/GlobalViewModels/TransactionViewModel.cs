@@ -6,7 +6,6 @@ namespace BedeSlots.ViewModels.GlobalViewModels
 {
     public class TransactionViewModel
     {    
-
         public DateTime Date { get; set; }
 
         public TypeOfTransaction Type { get; set; }

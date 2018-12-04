@@ -50,6 +50,7 @@ namespace BedeSlots
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<ITransactionServices, TransactionServices>();
             services.AddScoped<IMappingProvider, MappingProvider>();
+            services.AddScoped<ICurrencyServices, CurrencyServices>();
 
             services.AddMemoryCache();
             services.AddAutoMapper();
