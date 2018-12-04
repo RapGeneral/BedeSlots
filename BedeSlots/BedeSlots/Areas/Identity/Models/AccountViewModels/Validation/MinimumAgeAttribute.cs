@@ -8,7 +8,7 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels.Validation
 {
     public class MinimumAgeAttribute : ValidationAttribute
     {
-        int minimumAge;
+        private readonly int minimumAge;
 
         public MinimumAgeAttribute(int minValue)
         {
