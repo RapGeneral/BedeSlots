@@ -58,7 +58,7 @@ namespace BedeSlots.Services
             return model;
         }
 
-        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int min, int max, ICollection<string> types)
+        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int? min, int? max, ICollection<string> types)
         {
             IQueryable<Transaction> transactions = transactionRepo.All()
                 .Include(tr => tr.Amount)

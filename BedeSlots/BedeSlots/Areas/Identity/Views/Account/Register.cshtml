@@ -3,6 +3,8 @@
     ViewData["Title"] = "Register";
 }
 
+
+
 <h2>@ViewData["Title"]</h2>
 
 <div class="row">
@@ -34,12 +36,8 @@
             <div class="form-group">
                 <p>Note: you can not change your currency once set!</p>
                 <label asp-for="CurrencyName"></label>
-                <select asp-for="CurrencyName" class="form-control">
-                    <option value="EUR"></option>
-                    <option value="USD"></option>
-                    <option value="GBP"></option>
-                    <option value="BGN"></option>                   
-                </select>                
+                <select asp-for="CurrencyName" class="selectpicker" name="CurrencyName" asp-items="@Model.Currencies"></select>
+               
             </div>
             <div class="form-group">
                 <label asp-for="DateOfBirth"></label>
@@ -53,4 +51,6 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
 }

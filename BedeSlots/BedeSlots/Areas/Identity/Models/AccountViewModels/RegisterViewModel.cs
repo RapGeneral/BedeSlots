@@ -1,5 +1,6 @@
 ﻿using BedeSlots.Areas.Identity.Models.AccountViewModels.Validation;
 using BedeSlots.DataModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,8 +32,11 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "Currency is required!")]
+        [Display(Name = "Choose currency")]        
         public string CurrencyName { get; set; }
+
+        public IEnumerable<SelectListItem> Currencies { get; set; }
 
         [Required]
         [MinimumAge(18)]    

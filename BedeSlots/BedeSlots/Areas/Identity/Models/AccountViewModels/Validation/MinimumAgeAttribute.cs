@@ -8,11 +8,11 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels.Validation
 {
     public class MinimumAgeAttribute : ValidationAttribute
     {
-        int _minimumAge;
+        private readonly int minimumAge;
 
         public MinimumAgeAttribute(int minimumAge)
         {
-            _minimumAge = minimumAge;
+            this.minimumAge = minimumAge;
         }
 
         public override bool IsValid(object value)
@@ -20,7 +20,7 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels.Validation
             DateTime date;
             if (DateTime.TryParse(value.ToString(), out date))
             {
-                return date.AddYears(_minimumAge) < DateTime.Now;
+                return date.AddYears(minimumAge) < DateTime.Now;
             }
 
             return false;

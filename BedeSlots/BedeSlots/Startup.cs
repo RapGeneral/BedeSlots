@@ -49,6 +49,7 @@ namespace BedeSlots
             services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IMappingProvider, MappingProvider>();
+            services.AddScoped<ICurrencyServices, CurrencyServices>();
 
             services.AddMemoryCache();
             services.AddAutoMapper();
