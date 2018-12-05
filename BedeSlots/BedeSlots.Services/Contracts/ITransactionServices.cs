@@ -1,8 +1,6 @@
-﻿using BedeSlots.ViewModels;
-using BedeSlots.ViewModels.Enums;
-using System;
+﻿using BedeSlots.ViewModels.Enums;
+using BedeSlots.ViewModels.GlobalViewModels;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BedeSlots.Services.Contracts

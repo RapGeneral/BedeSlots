@@ -2,10 +2,10 @@
 using BedeSlots.ViewModels.Enums;
 using System;
 
-namespace BedeSlots.ViewModels
+namespace BedeSlots.ViewModels.GlobalViewModels
 {
     public class TransactionViewModel
-    {
+    {    
         public DateTime Date { get; set; }
 
         public TypeOfTransaction Type { get; set; }

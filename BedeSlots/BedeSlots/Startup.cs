@@ -48,12 +48,13 @@ namespace BedeSlots
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
             services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<ITransactionServices, TransactionServices>();
             services.AddScoped<IMappingProvider, MappingProvider>();
             services.AddScoped<ICurrencyServices, CurrencyServices>();
 
             services.AddMemoryCache();
             services.AddAutoMapper();
-
+        
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
