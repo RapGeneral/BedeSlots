@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -53,7 +54,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 			{
 				// This doesn't count login failures towards account lockout
 				// To enable password failures to trigger account lockout, set lockoutOnFailure: true
-				var result = await this.signinManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+				var result = await this.signinManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
 				if (result.Succeeded)
 				{
 					return this.RedirectToAction("", "", new { @area = "" });
@@ -71,12 +72,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 
 		public async Task<IActionResult> Register()
 		{
-            var cachedSelectListCurrencies = await memoryCache.GetOrCreateAsync("Currencies", async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromHours(4);
-                var currencies = await currencyServices.GetCurrenciesAsync();
-                return currencies.Select(c => new SelectListItem(c, c));
-            });
+            var cachedSelectListCurrencies = await GetCurrenciesSelectListItemsCached();
             var newRegister = new RegisterViewModel
             {
                 Currencies = cachedSelectListCurrencies
@@ -101,8 +97,9 @@ namespace BedeSlots.Areas.Identity.Controllers
 				this.AddErrors(result);
 			}
 
-			// If we got this far, something failed, redisplay form
-			return this.View();
+            // If we got this far, something failed, redisplay form
+            model.Currencies = await GetCurrenciesSelectListItemsCached();
+            return this.View(model);
 		}
 
 		[HttpPost]
@@ -127,5 +124,15 @@ namespace BedeSlots.Areas.Identity.Controllers
 				this.ModelState.AddModelError(string.Empty, error.Description);
 			}
 		}
+        
+        private async Task<IEnumerable<SelectListItem>> GetCurrenciesSelectListItemsCached()
+        {
+            return await memoryCache.GetOrCreateAsync("Currencies", async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(4);
+                var currencies = await currencyServices.GetCurrenciesAsync();
+                return currencies.Select(c => new SelectListItem(c, c));
+            });
+        }
 	}
 }
