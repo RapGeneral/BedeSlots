@@ -5,6 +5,7 @@ using BedeSlots.ViewModels.GlobalViewModels;
 using System;
 using System.Threading.Tasks;
 using BedeSlots.Infrastructure.MappingProvider;
+using System.Linq;
 
 namespace BedeSlots.Services
 {
@@ -44,10 +45,13 @@ namespace BedeSlots.Services
             return model;
         }
 
-        public async Task<BankDetailsViewModel> DeleteBankDetailsAsync(Guid Id)
+        public async Task DeleteBankDetailsAsync(Guid Id)
         {
-            //TODO
-            throw new NotImplementedException();
+            var cardToRemove = bankDetailsRepo.All().Where(ctr => ctr.Id == Id).FirstOrDefault();
+
+            cardToRemove.IsDeleted = true;
+
+            await bankDetailsRepo.SaveAsync();
         }
     }
 }
