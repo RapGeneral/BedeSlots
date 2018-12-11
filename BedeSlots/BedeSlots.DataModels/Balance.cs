@@ -19,6 +19,8 @@ namespace BedeSlots.DataModels
         public Currency Currency { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
+
+        public BalanceType Type { get; set; }
         
     }
 }
