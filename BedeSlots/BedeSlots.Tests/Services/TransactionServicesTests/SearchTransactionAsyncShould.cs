@@ -243,5 +243,119 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
             
             Assert.IsTrue(result.Count == 0);
         }
+
+        [TestMethod]
+        public async Task CorrectlySearch_WhenMinAndMaxAreSpecified()
+        {
+            const int minSearch = 16;
+            const int maxSearch = 133;
+
+            var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var transactionTypeRepoMock = new Mock<IRepository<TransactionType>>();
+
+            List<string> types = new List<string>();
+
+            var transaction1 = new Transaction { Amount = 22 };
+            var transaction2 = new Transaction { Amount = 14 };
+            var transaction3 = new Transaction { Amount = (decimal)343.23 };
+
+            var transactionsList = new List<Transaction> { transaction1, transaction2, transaction3 };
+
+            var transactionRepoMock = new Mock<IRepository<Transaction>>();
+            transactionRepoMock.Setup(trp => trp.All())
+                .Returns(transactionsList
+                    .AsQueryable()
+                    .BuildMock()
+                    .Object);
+
+            List<Transaction> mapInput = null;
+            var mappingProviderMock = new Mock<IMappingProvider>();
+            mappingProviderMock
+                .Setup(mpm => mpm.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()))
+                .Callback<object>(inputArg => mapInput = inputArg as List<Transaction>);
+
+            var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
+            //Act
+            var result = await sut.SearchTransactionAsync(null, minSearch, maxSearch, types);
+            //Assert
+            transactionRepoMock.Verify(urm => urm.All(), Times.Once);
+            mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
+            Assert.IsTrue(mapInput.Count == 1);
+            Assert.IsTrue(mapInput.Any(tr => tr.Balance == transaction2.Balance));
+        }
+
+        [TestMethod]
+        public async Task CorrectlySearch_WhenTypeIsSpecified()
+        {
+            var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var transactionTypeRepoMock = new Mock<IRepository<TransactionType>>();
+
+            const string type1 = "deposit";
+
+            List<string> types = new List<string> { type1 };            
+
+            var transaction1 = new Transaction { Type = new TransactionType { Name = "deposit" } };
+            var transaction2 = new Transaction { Type = new TransactionType { Name = "stake" } };
+            var transaction3 = new Transaction { Type = new TransactionType { Name = "win" } };
+
+            var transactionsList = new List<Transaction> { transaction1, transaction2, transaction3 };
+
+            var transactionRepoMock = new Mock<IRepository<Transaction>>();
+            transactionRepoMock.Setup(trp => trp.All())
+                .Returns(transactionsList
+                    .AsQueryable()
+                    .BuildMock()
+                    .Object);
+
+            List<Transaction> mapInput = null;
+            var mappingProviderMock = new Mock<IMappingProvider>();
+            mappingProviderMock
+                .Setup(mpm => mpm.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()))
+                .Callback<object>(inputArg => mapInput = inputArg as List<Transaction>);
+
+            var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
+            //Act
+            var result = await sut.SearchTransactionAsync(null, null, null, types);
+            //Assert
+            transactionRepoMock.Verify(urm => urm.All(), Times.Once);
+            mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
+            Assert.IsTrue(mapInput.Count == 1);
+        }
+
+        [TestMethod]
+        public async Task CorrectlySearch_WhenTypeIsNull()
+        {
+            var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var transactionTypeRepoMock = new Mock<IRepository<TransactionType>>();
+
+            List<string> types = new List<string>();
+
+            var transaction1 = new Transaction { Type = new TransactionType { Name = "deposit" } };
+            var transaction2 = new Transaction { Type = new TransactionType { Name = "stake" } };
+            var transaction3 = new Transaction { Type = new TransactionType { Name = "win" } };
+
+            var transactionsList = new List<Transaction> { transaction1, transaction2, transaction3 };
+
+            var transactionRepoMock = new Mock<IRepository<Transaction>>();
+            transactionRepoMock.Setup(trp => trp.All())
+                .Returns(transactionsList
+                    .AsQueryable()
+                    .BuildMock()
+                    .Object);
+
+            List<Transaction> mapInput = null;
+            var mappingProviderMock = new Mock<IMappingProvider>();
+            mappingProviderMock
+                .Setup(mpm => mpm.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()))
+                .Callback<object>(inputArg => mapInput = inputArg as List<Transaction>);
+
+            var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
+            //Act
+            var result = await sut.SearchTransactionAsync(null, null, null, types);
+            //Assert
+            transactionRepoMock.Verify(urm => urm.All(), Times.Once);
+            mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
+            Assert.IsTrue(mapInput.Count == 3);
+        }
     }
 }
