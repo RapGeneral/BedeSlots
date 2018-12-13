@@ -21,6 +21,8 @@ namespace BedeSlots.DataContext
 
         public DbSet<UserBankDetails> UserBankDetails { get; set; }
 
+        public DbSet<BalanceType> BalanceTypes { get; set; }
+
         public BedeDBContext(DbContextOptions<BedeDBContext> options) : base(options)
         {
 
