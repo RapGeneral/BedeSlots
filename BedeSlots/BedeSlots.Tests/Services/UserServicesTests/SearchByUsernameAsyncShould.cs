@@ -3,6 +3,7 @@ using BedeSlots.DataModels;
 using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Services;
 using BedeSlots.ViewModels.GlobalViewModels;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
 using Moq;
@@ -20,6 +21,10 @@ namespace BedeSlots.Tests.Services.UserServicesTests
         {
             //Arrange
             var mappingProviderMock = new Mock<IMappingProvider>();
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            var currencyRepoMock = new Mock<IRepository<Currency>>();
+            var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
 
             var user1 = new User { UserName = "pesho" };
             var user2 = new User { UserName = "gosho" };
@@ -32,7 +37,7 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                     .BuildMock()
                     .Object);
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
             //Act
             var result = await sut.SearchByUsernameAsync(null);
             //Assert
@@ -55,6 +60,11 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                 .Setup(mpm => mpm.MapTo<ICollection<UserViewModel>>(It.IsAny<List<User>>()))
                 .Callback<object>(inputArg => mapInput = inputArg as List<User>);
 
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            var currencyRepoMock = new Mock<IRepository<Currency>>();
+            var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+
             var userToBeFound1 = new User { UserName = nameToBeFound1 };
             var userToBeFound2 = new User { UserName = nameToBeFound2 };
             var userNotToBeFound1 = new User { UserName = nameNotToBeFound1 };
@@ -68,7 +78,7 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                     .BuildMock()
                     .Object);
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
             //Act
             var result = await sut.SearchByUsernameAsync(searchString);
             //Assert
