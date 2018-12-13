@@ -33,7 +33,7 @@ namespace BedeSlots.Services
             var balance = await balanceRepo.All()
                 .Include(b => b.User)
                 .Include(b => b.Currency)
-                .Where(b => b.UserId == userId && b.Currency.CurrencyName != "USD")
+                .Where(b => b.UserId == userId && b.Currency.CurrencyName == "USD")
                 .FirstOrDefaultAsync();
 
             var transactionType = await transactionTypeRepo.All()
@@ -47,7 +47,7 @@ namespace BedeSlots.Services
                 Date = DateTime.Now,
                 Description = description,
                 Amount = amount,
-                OpeningBalance = balance.Money
+                OpeningBalance = balance.Money - amount
             };
 
             transactionRepo.Add(transaction);
@@ -88,14 +88,14 @@ namespace BedeSlots.Services
             }
             
 
-            if (types.Count == 0)
+            if (types.Count != 0)
             {
                 transactions = transactions.Where(tr => types.Any(type => tr.Type.Name.ToLower() == type.ToLower()));
             }
 
-            var foundedTrnasaciton = await transactions.ToListAsync();
+            var foundTrnasaciton = await transactions.ToListAsync();
 
-            return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundedTrnasaciton);
+            return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundTrnasaciton);
         }
     }
 }

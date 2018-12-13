@@ -22,17 +22,20 @@ namespace BedeSlots.Areas.Identity.Controllers
 		private readonly SignInManager<User> signinManager;
         private readonly IMemoryCache memoryCache;
         private readonly ICurrencyServices currencyServices;
+		private readonly IUserServices userServices;
 
 		public AccountController(
 			UserManager<User> userManager,
 			SignInManager<User> signInManager,
             IMemoryCache memoryCache,
+			IUserServices userServices,
             ICurrencyServices currencyServices)
 		{
 			this.userManager = userManager;
 			this.signinManager = signInManager;
             this.memoryCache = memoryCache;
             this.currencyServices = currencyServices;
+			this.userServices = userServices;
 		}
 
 		[TempData]
@@ -90,6 +93,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 				var result = await this.userManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
+					await userServices.CreateUserInitialBalances(user.Id, model.CurrencyName);
 					await this.signinManager.SignInAsync(user, isPersistent: false);
 
 					return this.RedirectToAction("", "", new { @area = "" });

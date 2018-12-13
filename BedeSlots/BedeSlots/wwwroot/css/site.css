@@ -12,6 +12,10 @@ body {
     padding-right: 15px;
 }
 
+.transparent {
+    opacity: 0.2;
+}
+
 /* Carousel */
 .carousel-caption p {
     font-size: 20px;
