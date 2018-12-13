@@ -60,7 +60,7 @@ $(function () {
             const dataToSend = $creditCardForm.serialize();
 
             $.post($creditCardForm.attr('action'), dataToSend, function (result) {
-                $('#status-message').html(result);;
+                $('#status-message').html(result);
             }); 
 
             modalClear();

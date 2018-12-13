@@ -10,21 +10,20 @@ namespace BedeSlots.Services
     public class SlotGamesServices : ISlotGamesServices
     {
         private readonly IMemoryCache cache;
-        private GameItemChanceOutOf100 rowUniqueItem;
 
         public SlotGamesServices(IMemoryCache cache)
         {
             this.cache = cache;
         }
 
-        public double Evaluate(List<List<GameItemChanceOutOf100>> slotMatrix)
+        public decimal Evaluate(List<List<GameItemChanceOutOf100>> slotMatrix)
         {
             if(slotMatrix.Count < 3 || slotMatrix[0].Count < 3)
             {
                 throw new ArgumentException("Slot matrix's dimentions should be atleast 3x3!");
             }
             var wildCard = GetEnumValuesCached().First();
-            double addedCoefs = 0;
+            decimal addedCoefs = 0;
             for (int i = 0; i < slotMatrix.Count; i++)
             {
                 bool rowJackpot = true;
@@ -47,12 +46,12 @@ namespace BedeSlots.Services
                     addedCoefs += CalculateJackpotRowCoeff(slotMatrix[i]);
                 }
             }
-            return addedCoefs / 10;
+            return addedCoefs / 10M;
         }
 
-        private double CalculateJackpotRowCoeff(List<GameItemChanceOutOf100> winningRow)
+        private decimal CalculateJackpotRowCoeff(List<GameItemChanceOutOf100> winningRow)
         {
-            double rowCoeff = 0;
+            decimal rowCoeff = 0;
             foreach(var item in winningRow)
             {
                 rowCoeff += (int)ConvertFromEnumToEnumCached<GameItemChanceOutOf100, GameItemCoeffsOutOf10>(item);
