@@ -53,6 +53,7 @@ namespace BedeSlots.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SlotGame(SlotGameViewModel model)
         {
+            //Also check if the games are exactly 3x3, 5x5 and 8x5
             if (!ModelState.IsValid)
             {
                 Response.StatusCode = 400;
