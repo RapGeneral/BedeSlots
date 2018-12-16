@@ -6,6 +6,8 @@ using System;
 using System.Threading.Tasks;
 using BedeSlots.Infrastructure.MappingProvider;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace BedeSlots.Services
 {
@@ -20,10 +22,14 @@ namespace BedeSlots.Services
             this.mappingProvider = mappingProvider;
         }
 
-        public async Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate)
+        public async Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate, string userId)
         {
-            //TODO add check if exists; If exists it should throw custom error
-            //Hook them to a user
+            var existingBankDetails = await bankDetailsRepo.All().Where(bd => bd.Number == number && bd.Cvv == cvv).ToListAsync();
+            if (!(existingBankDetails is null))
+            {
+                throw new ArgumentNullException("The card already exists!");
+            }
+            
             int dateResult = DateTime.Compare(expiryDate, DateTime.Now);
             
             if (dateResult < 0)
@@ -41,6 +47,8 @@ namespace BedeSlots.Services
             };
 
             bankDetailsRepo.Add(bankDetails);
+            var userBankDetails = new List<UserBankDetails> { new UserBankDetails { UserId = userId, BankDetailsId = bankDetails.Id } };
+            bankDetails.UserBankDetails = userBankDetails;
             await bankDetailsRepo.SaveAsync();
 
             var model = mappingProvider.MapTo<BankDetailsViewModel>(bankDetails);          

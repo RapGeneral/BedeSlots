@@ -6,7 +6,7 @@ namespace BedeSlots.Services.Contracts
 {
     public interface IBankDetailsServices
     {
-        Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate);
+        Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate, string userId);
 
         Task DeleteBankDetailsAsync(Guid Id);
     }

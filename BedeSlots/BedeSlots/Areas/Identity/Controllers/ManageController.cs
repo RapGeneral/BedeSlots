@@ -118,7 +118,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 
         [HttpPost]
         [Authorize]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCreditCard(BankDetailsViewModel model)
         {
             if (!ModelState.IsValid)
@@ -126,7 +126,7 @@ namespace BedeSlots.Areas.Identity.Controllers
                 return this.PartialView("_StatusMessage", "Error: Wrong format!");
             }
 
-            var newBankDetails = await bankDetailsServices.AddBankDetailsAsync(model.Number, model.Cvv, model.ExpiryDate);
+            var newBankDetails = await bankDetailsServices.AddBankDetailsAsync(model.Number, model.Cvv, model.ExpiryDate, userManager.GetUserId(User));
 
             return this.PartialView("_StatusMessage", "Successfully added the new credit card!");
         }
