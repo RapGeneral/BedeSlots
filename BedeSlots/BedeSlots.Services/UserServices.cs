@@ -1,6 +1,6 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
+using BedeSlots.ViewModels.MappingProvider;
 using BedeSlots.Services.Contracts;
 using BedeSlots.ViewModels.GlobalViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BedeSlots.ViewModels.Enums;
 
 namespace BedeSlots.Services
 {
@@ -59,14 +60,15 @@ namespace BedeSlots.Services
             var userBalances = await balanceRepo.All()
                                         .Where(b => b.UserId == userId)
                                         .Include(b => b.Currency)
+                                        .Include(b => b.Type)
                                         .ToListAsync();
             if(userBalances.Count < 1)
             {
                 throw new ArgumentException("The user does not have enough balances!");
             }
 
-            var nativeBalance = userBalances.Where(b => b.Currency.CurrencyName != "USD").First();
-            var baseBalance = userBalances.Where(b => b.Currency.CurrencyName == "USD").First();
+            var nativeBalance = userBalances.Where(b => b.Type.Name == BalanceTypes.Personal.ToString()).First();
+            var baseBalance = userBalances.Where(b => b.Type.Name == BalanceTypes.Base.ToString()).First();
 
             var rate = await GetCurrencyRateChached(nativeBalance.Currency.CurrencyName);
             var moneyInBaseCurrency = nativeMoney * (1 / rate);
@@ -153,6 +155,7 @@ namespace BedeSlots.Services
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
                 return await currencyRepo
                  .All()
+                 .Include(cur => cur.Rates)
                  .Select(curs => new {
                      Name = curs.CurrencyName,
                      Rate = curs.Rates.OrderByDescending(rate => rate.CreatedAt).FirstOrDefault().Coeff

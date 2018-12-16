@@ -2,8 +2,8 @@
 using BedeSlots.DataContext;
 using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
-using BedeSlots.Infrastructure.Providers;
+using BedeSlots.ViewModels.MappingProvider;
+using BedeSlots.ViewModels.Providers;
 using BedeSlots.Services;
 using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Builder;
