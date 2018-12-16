@@ -1,7 +1,9 @@
 ﻿using BedeSlots.DataModels;
+using BedeSlots.ViewModels.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace BedeSlots.DataContext
 {
@@ -42,6 +44,10 @@ namespace BedeSlots.DataContext
                 .HasOne(t => t.Balance)
                 .WithMany(b => b.Transactions)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            var typeStrings = Enum.GetNames(typeof(ViewModels.Enums.BalanceTypes));
+            var types = typeStrings.Select(ts => new BalanceType { Name = ts, Id = Guid.NewGuid() }).ToArray();
+            builder.Entity<BalanceType>().HasData(types);
 
             base.OnModelCreating(builder);
         }

@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace BedeSlots.Infrastructure.Providers
+namespace BedeSlots.ViewModels.Providers
 {
 
     public class UserManagerWrapper<T> : IUserManager<T> where T : class
@@ -47,5 +47,14 @@ namespace BedeSlots.Infrastructure.Providers
         {
             return await _userManager.GetUserAsync(claimsPrincipal);
         }
-	}
+
+        public async Task<IdentityResult> AddToRoleAsync(T user, string role)
+        {
+            return await _userManager.AddToRoleAsync(user, role);
+        }
+        public async Task<IdentityResult> RemoveFromRoleAsync(T user, string role)
+        {
+            return await _userManager.RemoveFromRoleAsync(user, role);
+        }
+    }
 }

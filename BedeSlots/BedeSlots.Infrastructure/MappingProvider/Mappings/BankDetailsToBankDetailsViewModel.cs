@@ -3,7 +3,7 @@ using BedeSlots.DataModels;
 using BedeSlots.ViewModels.GlobalViewModels;
 using System;
 
-namespace BedeSlots.Infrastructure.MappingProvider.Mappings
+namespace BedeSlots.ViewModels.MappingProvider.Mappings
 {
     public class BankDetailsToBankDetailsViewModel : Profile
     {

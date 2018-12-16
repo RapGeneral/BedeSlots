@@ -8,7 +8,7 @@
                 <a asp-area="Identity" asp-controller="Manage" asp-action="Index" title="Manage">@User.Identity.Name</a>
             </li>
             <li>
-                <a asp-area="Identity" asp-controller="Manage" asp-action="Deposit" title="Manage">@await Component.InvokeAsync(nameof(Money))</a>
+                <a id="money" asp-area="Identity" asp-controller="Manage" asp-action="Deposit" title="Manage">@await Component.InvokeAsync(nameof(Money))</a>
             </li>
             <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>

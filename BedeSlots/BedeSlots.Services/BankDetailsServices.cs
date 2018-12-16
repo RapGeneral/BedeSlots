@@ -4,7 +4,7 @@ using BedeSlots.Services.Contracts;
 using BedeSlots.ViewModels.GlobalViewModels;
 using System;
 using System.Threading.Tasks;
-using BedeSlots.Infrastructure.MappingProvider;
+using BedeSlots.ViewModels.MappingProvider;
 using System.Linq;
 
 namespace BedeSlots.Services
