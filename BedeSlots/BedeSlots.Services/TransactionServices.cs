@@ -70,11 +70,11 @@ namespace BedeSlots.Services
 
             if (min == null && max != null)
             {
-                transactions = transactions.Where(tr => Math.Abs(tr.Amount) < max);
+                transactions = transactions.Where(tr => Math.Abs(tr.Amount) < (decimal)max);
             }
             if (max == null && min != null)
             {
-                transactions = transactions.Where(tr => Math.Abs(tr.Amount) > min);
+                transactions = transactions.Where(tr => Math.Abs(tr.Amount) > (decimal)min);
             }
             if (min != null && max != null)
             {

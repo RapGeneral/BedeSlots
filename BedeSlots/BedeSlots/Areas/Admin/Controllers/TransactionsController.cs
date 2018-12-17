@@ -12,12 +12,14 @@ using BedeSlots.ViewModels.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
 using BedeSlots.ViewModels.GlobalViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BedeSlots.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
     [Route("[area]/[controller]/[action]")]
+	[Authorize(Roles = "Administrator")]
     public class TransactionsController : Controller
     {
         private readonly IMemoryCache cache;

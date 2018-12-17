@@ -24,6 +24,7 @@ namespace BedeSlots.Tests.Services.UserServicesTests
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
             var currencyRepoMock = new Mock<IRepository<Currency>>();
             var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
 
             var user1 = new User { UserName = "pesho" };
@@ -37,7 +38,7 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                     .BuildMock()
                     .Object);
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act
             var result = await sut.SearchByUsernameAsync(null);
             //Assert
@@ -63,6 +64,7 @@ namespace BedeSlots.Tests.Services.UserServicesTests
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
             var currencyRepoMock = new Mock<IRepository<Currency>>();
             var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
 
             var userToBeFound1 = new User { UserName = nameToBeFound1 };
@@ -78,7 +80,7 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                     .BuildMock()
                     .Object);
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act
             var result = await sut.SearchByUsernameAsync(searchString);
             //Assert

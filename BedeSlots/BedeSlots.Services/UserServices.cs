@@ -15,6 +15,7 @@ namespace BedeSlots.Services
 {
     public class UserServices : IUserServices
     {
+        private readonly IRepository<BalanceType> balanceTypeRepo;
         private readonly IMappingProvider mappingProvider;
         private readonly IRepository<User> userRepo;
         private readonly IRepository<Currency> currencyRepo;
@@ -28,8 +29,10 @@ namespace BedeSlots.Services
             IMemoryCache cache, 
             IRepository<Currency> currencyRepo, 
             IRepository<Balance> balanceRepo,
-            IRepository<UserBankDetails> userBankDetailsRepo)
+            IRepository<UserBankDetails> userBankDetailsRepo,
+            IRepository<BalanceType> balanceTypeRepo)
         {
+            this.balanceTypeRepo = balanceTypeRepo;
             this.mappingProvider = mappingProvider;
             this.userRepo = userRepo;
             this.currencyRepo = currencyRepo;
@@ -95,7 +98,8 @@ namespace BedeSlots.Services
             }
 
             var balances = await balanceRepo.All().Where(bal => bal.UserId == userId).ToListAsync();
-            if(balances.Count != 0)
+
+            if (balances.Count != 0)
             {
                 throw new ArgumentException("User already has balances on his id!");
             }
@@ -113,13 +117,13 @@ namespace BedeSlots.Services
             {
                 UserId = userId,
                 Currency = currencies.First(cur => cur.CurrencyName.ToLower() == nativeCurrency.ToLower()),
-                Type = new BalanceType{ Name = BalanceTypes.Personal.ToString() }
+                Type = await GetNativeBalanceTypeCached()
             };
             var baseBalance = new Balance
             {
                 UserId = userId,
                 Currency = currencies.First(cur => cur.CurrencyName.ToLower() == BASE_CURRENCY.ToLower()),
-                Type = new BalanceType{ Name = BalanceTypes.Base.ToString() }
+                Type = await GetBaseBalanceTypeCached()
             };
 
             await balanceRepo.AddAsync(nativeBalance);
@@ -161,6 +165,23 @@ namespace BedeSlots.Services
 
             var models = mappingProvider.MapTo<ICollection<BankDetailsViewModel>>(userBankDetails);
             return models;
+        }
+
+        private async Task<BalanceType> GetNativeBalanceTypeCached()
+        {
+            return await cache.GetOrCreate("BalanceTypeNative", async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(12);
+                return await balanceTypeRepo.All().Where(bal => bal.Name == BalanceTypes.Personal.ToString()).FirstOrDefaultAsync();
+            });
+        }
+        private async Task<BalanceType> GetBaseBalanceTypeCached()
+        {
+            return await cache.GetOrCreate("BalanceTypeBase", async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(12);
+                return await balanceTypeRepo.All().Where(bal => bal.Name == BalanceTypes.Base.ToString()).FirstOrDefaultAsync();
+            });
         }
 
         private async Task<decimal> GetCurrencyRateChached(string currency)

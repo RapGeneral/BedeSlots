@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using BedeSlots.Utilities.Extentions;
 
 namespace BedeSlots
 {
@@ -71,7 +72,7 @@ namespace BedeSlots
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error/Index");
                 app.UseHsts();
             }
 
@@ -80,6 +81,8 @@ namespace BedeSlots
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            app.UseNotFoundExceptionHandler();
 
             app.UseMvc(routes =>
             {

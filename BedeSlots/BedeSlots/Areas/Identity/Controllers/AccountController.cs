@@ -1,6 +1,7 @@
 ﻿using BedeSlots.Areas.Identity.Models.AccountViewModels;
 using BedeSlots.DataModels;
 using BedeSlots.Services.Contracts;
+using BedeSlots.ViewModels.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -89,11 +90,12 @@ namespace BedeSlots.Areas.Identity.Controllers
 		{
 			if (this.ModelState.IsValid)
 			{
-				var user = new User { UserName = model.Username, Email = model.Email, DateOfBirth = model.DateOfBirth };
+				var user = new User { UserName = model.Username, Email = model.Email, DateOfBirth = model.DateOfBirth, CreatedOn = DateTime.Now };
 				var result = await this.userManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
 					await userServices.CreateUserInitialBalances(user.Id, model.CurrencyName);
+                    await userManager.AddToRoleAsync(user, UserRoles.User.ToString());
 					await this.signinManager.SignInAsync(user, isPersistent: false);
 
 					return this.RedirectToAction("", "", new { @area = "" });

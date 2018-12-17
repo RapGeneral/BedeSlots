@@ -27,8 +27,9 @@ namespace BedeSlots.Tests.Services.UserServicesTests
             var currencyRepoMock = new Mock<IRepository<Currency>>();
             var balanceRepoMock = new Mock<IRepository<Balance>>();
             var userRepoMock = new Mock<IRepository<User>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act && Assert
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.GetBalanceInformation(null));
         }
@@ -60,8 +61,9 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                                 .Object);
 
             var userRepoMock = new Mock<IRepository<User>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act
             var result = await sut.GetBalanceInformation(userId);
             //Assert
@@ -87,8 +89,9 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                                 .Object);
 
             var userRepoMock = new Mock<IRepository<User>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act && Assert
             await Assert.ThrowsExceptionAsync<ArgumentException>(() => sut.GetBalanceInformation(userId));
         }
