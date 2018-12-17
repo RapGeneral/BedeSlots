@@ -6,6 +6,7 @@ using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Infrastructure.Providers;
 using BedeSlots.Services;
 using BedeSlots.Services.Contracts;
+using BedeSlots.Services.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -52,6 +53,7 @@ namespace BedeSlots
             services.AddScoped<IMappingProvider, MappingProvider>();
             services.AddScoped<ICurrencyServices, CurrencyServices>();
             services.AddScoped<IBankDetailsServices, BankDetailsServices>();
+            services.AddScoped<IDateTimeWrapper, DateTimeWrapper>();
 
             services.AddMemoryCache();
             services.AddAutoMapper();
