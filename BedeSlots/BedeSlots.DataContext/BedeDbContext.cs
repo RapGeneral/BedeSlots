@@ -1,4 +1,5 @@
-﻿using BedeSlots.DataModels;
+﻿using BedeSlots.DataContext.Configurations;
+using BedeSlots.DataModels;
 using BedeSlots.GlobalData.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -32,18 +33,15 @@ namespace BedeSlots.DataContext
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<UserBankDetails>()
-                .HasKey(e => new { e.UserId, e.BankDetailsId });
-
-            builder.Entity<Rate>()
-                .HasOne(r => r.ToCurrency)
-                .WithMany(tc => tc.Rates)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Transaction>()
-                .HasOne(t => t.Balance)
-                .WithMany(b => b.Transactions)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.ApplyConfiguration(new BalanceConfigurations());
+            builder.ApplyConfiguration(new BalanceTypeConfigurations());
+            builder.ApplyConfiguration(new BankDetailsConfigurations());
+            builder.ApplyConfiguration(new CurrencyConfigurations());
+            builder.ApplyConfiguration(new RateConfigurations());
+            builder.ApplyConfiguration(new TransactionConfigurations());
+            builder.ApplyConfiguration(new TransactionTypeConfiguration());
+            builder.ApplyConfiguration(new UserBankDetailsConfiguration());
+            builder.ApplyConfiguration(new UserConfiguration());
 
             base.OnModelCreating(builder);
         }

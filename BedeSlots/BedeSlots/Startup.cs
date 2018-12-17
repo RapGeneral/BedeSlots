@@ -49,6 +49,7 @@ namespace BedeSlots
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
+            services.AddScoped(typeof(ISignInManager<>), typeof(SignInManagerWrapper<>));
             services.AddSingleton<IFileReader,FileReader>();
             services.AddSingleton<IJsonConverter, JsonConvertor>();
             services.AddScoped<IUserServices, UserServices>();
