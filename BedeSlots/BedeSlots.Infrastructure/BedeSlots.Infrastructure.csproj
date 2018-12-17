@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BedeSlots.DataModels\BedeSlots.DataModels.csproj" />
-    <ProjectReference Include="..\BedeSlots.ViewModels\BedeSlots.ViewModels.csproj" />
+    <ProjectReference Include="..\BedeSlots.ViewModels\BedeSlots.GlobalData.csproj" />
   </ItemGroup>
 
 </Project>

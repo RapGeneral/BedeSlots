@@ -17,7 +17,7 @@ namespace BedeSlots.Services
             this.currencyRepo = currencyRepo;
         }
 
-        public async Task<List<string>> GetCurrenciesAsync()
+        public async Task<ICollection<string>> GetCurrenciesAsync()
         {
             var currencyNames = await currencyRepo.All().Select(c => c.CurrencyName).ToListAsync();
 

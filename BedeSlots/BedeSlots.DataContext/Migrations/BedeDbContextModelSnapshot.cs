@@ -52,7 +52,13 @@ namespace BedeSlots.DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BalanceType");
+                    b.ToTable("BalanceTypes");
+
+                    b.HasData(
+                        new { Id = new Guid("c674878f-9008-48cb-a826-c17d8ad7dc04"), Name = "Personal" },
+                        new { Id = new Guid("d0541f8a-ab80-4317-b4fc-cc920007863b"), Name = "Base" },
+                        new { Id = new Guid("87f5cab8-0031-4d38-8480-4ba76a8f4a06"), Name = "Bonus" }
+                    );
                 });
 
             modelBuilder.Entity("BedeSlots.DataModels.BankDetails", b =>
@@ -219,6 +225,10 @@ namespace BedeSlots.DataContext.Migrations
                     b.Property<string>("UserId");
 
                     b.Property<Guid>("BankDetailsId");
+
+                    b.Property<DateTime?>("DeletedOn");
+
+                    b.Property<bool>("IsDeleted");
 
                     b.HasKey("UserId", "BankDetailsId");
 

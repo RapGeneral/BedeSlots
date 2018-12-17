@@ -1,3 +1,2 @@
-﻿@using BedeSlots.ViewModels.GlobalViewModels
-@model MoneyViewModel  
-@Model.Amount @Model.Currency
+﻿@model MoneyViewModel
+@Math.Round(Model.Amount, 2) @Model.Currency

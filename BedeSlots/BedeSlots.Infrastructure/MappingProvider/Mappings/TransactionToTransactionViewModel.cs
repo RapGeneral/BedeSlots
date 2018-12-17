@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using BedeSlots.DataModels;
-using BedeSlots.ViewModels.Enums;
-using BedeSlots.ViewModels.GlobalViewModels;
+using BedeSlots.GlobalData.Enums;
+using BedeSlots.GlobalData.GlobalViewModels;
 using System;
 
-namespace BedeSlots.Infrastructure.MappingProvider.Mappings
+namespace BedeSlots.GlobalData.MappingProvider.Mappings
 {
     public class TransactionToTransactionViewModel : Profile
     {

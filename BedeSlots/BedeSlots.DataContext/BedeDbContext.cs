@@ -1,7 +1,9 @@
 ﻿using BedeSlots.DataModels;
+using BedeSlots.GlobalData.Enums;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace BedeSlots.DataContext
 {
@@ -45,6 +47,5 @@ namespace BedeSlots.DataContext
 
             base.OnModelCreating(builder);
         }
-
     }
 }

@@ -1,8 +1,10 @@
 ﻿using BedeSlots.DataModels;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 
-namespace BedeSlots.ViewModels.GlobalViewModels
+namespace BedeSlots.GlobalData.GlobalViewModels
 {
     public class TransactionViewModel
     {    

@@ -1,9 +1,9 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.Enums;
-using BedeSlots.ViewModels.GlobalViewModels;
+using BedeSlots.GlobalData.Enums;
+using BedeSlots.GlobalData.GlobalViewModels;
+using BedeSlots.GlobalData.MappingProvider;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,13 +29,11 @@ namespace BedeSlots.Services
 
         public async Task<TransactionViewModel> CreateTransactionAsync(TypeOfTransaction type, string description, decimal amount, string userId)
         {
-            //fix the magic string when we have base update
             var balance = await balanceRepo.All()
                 .Include(b => b.User)
-                .Include(b => b.Currency)
-                .Where(b => b.UserId == userId && b.Currency.CurrencyName == "USD")
+                .Include(b => b.Type)
+                .Where(b => b.UserId == userId && b.Type.Name == BalanceTypes.Base.ToString())
                 .FirstOrDefaultAsync();
-
             var transactionType = await transactionTypeRepo.All()
                 .Where(t => t.Name.ToLower() == type.ToString().ToLower())
                 .FirstOrDefaultAsync();
@@ -58,7 +56,7 @@ namespace BedeSlots.Services
             return model;
         }
 
-        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int? min, int? max, ICollection<string> types)
+        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int? min, int? max, ICollection<string> types, string sortProp, bool descending = false)
         {
             IQueryable<Transaction> transactions = transactionRepo.All()
                 .Include(tr => tr.Balance)
@@ -72,11 +70,11 @@ namespace BedeSlots.Services
 
             if (min == null && max != null)
             {
-                transactions = transactions.Where(tr => tr.Amount < max);
+                transactions = transactions.Where(tr => Math.Abs(tr.Amount) < (decimal)max);
             }
             if (max == null && min != null)
             {
-                transactions = transactions.Where(tr => tr.Amount > min);
+                transactions = transactions.Where(tr => Math.Abs(tr.Amount) > (decimal)min);
             }
             if (min != null && max != null)
             {
@@ -86,16 +84,47 @@ namespace BedeSlots.Services
                 }
                 transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
             }
-            
 
-            if (types.Count != 0)
+
+            if (!(types is null) && types.Count != 0)
             {
                 transactions = transactions.Where(tr => types.Any(type => tr.Type.Name.ToLower() == type.ToLower()));
+            }
+
+            if (!(sortProp is null))
+            {
+                if (descending)
+                {
+                    if (sortProp == "Username")
+                    {
+                        transactions = transactions.OrderByDescending(tr => tr.Balance.User);
+                    }
+                    else
+                    {
+                        transactions = transactions.OrderByDescending(tr => tr.GetType().GetProperty(sortProp).GetValue(tr, null));
+                    }
+                }
+                else
+                {
+                    if (sortProp == "Username")
+                    {
+                        transactions = transactions.OrderByDescending(tr => tr.Balance.User);
+                    }
+                    else
+                    {
+                        transactions = transactions.OrderBy(tr => tr.GetType().GetProperty(sortProp).GetValue(tr, null));
+                    }
+                }
             }
 
             var foundTrnasaciton = await transactions.ToListAsync();
 
             return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundTrnasaciton);
+        }
+
+        public async Task<ICollection<string>> GetTypesAsync()
+        {
+            return await transactionTypeRepo.All().Select(trt => trt.Name).ToListAsync();
         }
     }
 }

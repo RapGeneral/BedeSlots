@@ -1,6 +1,6 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
+using BedeSlots.GlobalData.MappingProvider;
 using BedeSlots.Services;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,12 +10,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BedeSlots.GlobalData.Enums;
 
 namespace BedeSlots.Tests.Services.UserServicesTests
 {
     [TestClass]
     public class UpdateUserBalanceByAmountShould
     {
+        [TestMethod]
+        public async Task ThrowArgumentNullException_WhenUserIdIsNull()
+        {
+            //Arrange
+            var mappingProviderMock = new Mock<IMappingProvider>();
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            var currencyRepoMock = new Mock<IRepository<Currency>>();
+            var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var userRepoMock = new Mock<IRepository<User>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
+            var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
+            //Act && Assert
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.UpdateUserBalanceByAmount(102, null));
+        }
         [DataTestMethod]
         [DataRow(10)]
         [DataRow(-10)]
@@ -49,10 +65,10 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                                         .Object);
 
             
-            var balance1 = new Balance { Currency = currency1, UserId = userId1, Money = balance1OpeningMoney }; //Thats USD
-            var balance12 = new Balance { Currency = currency2, UserId = userId1, Money = balance12OpeningMoney };//Thats EUR
-            var balance2 = new Balance { Currency = currency1, UserId = userId2 };
-            var balance22 = new Balance { Currency = currency3, UserId = userId2};
+            var balance1 = new Balance { Currency = currency1, UserId = userId1, Money = balance1OpeningMoney, Type = new BalanceType { Name = BalanceTypes.Base.ToString() } }; //Thats USD
+            var balance12 = new Balance { Currency = currency2, UserId = userId1, Money = balance12OpeningMoney, Type = new BalanceType { Name = BalanceTypes.Personal.ToString() } };//Thats EUR
+            var balance2 = new Balance { Currency = currency1, UserId = userId2, Type = new BalanceType { Name = BalanceTypes.Base.ToString() } }; 
+            var balance22 = new Balance { Currency = currency3, UserId = userId2, Type = new BalanceType { Name = BalanceTypes.Personal.ToString() } };
             var balanceRepoMock = new Mock<IRepository<Balance>>();
             balanceRepoMock
                 .Setup(brm => brm.All())
@@ -62,9 +78,10 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                                         .Object);
 
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userRepoMock = new Mock<IRepository<User>>();
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act
             var result = await sut.UpdateUserBalanceByAmount(moneyToAddInNative, userId1);
             //Assert
@@ -95,9 +112,10 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                                         .Object);
 
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userRepoMock = new Mock<IRepository<User>>();
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act & Assert
             await Assert.ThrowsExceptionAsync<ArgumentException>(() => sut.UpdateUserBalanceByAmount(213, "Pesho"));
         }
@@ -113,8 +131,8 @@ namespace BedeSlots.Tests.Services.UserServicesTests
 
             var currency1 = new Currency { CurrencyName = "USD" };
             var currency2 = new Currency { CurrencyName = null };
-            var balance1 = new Balance { Currency = currency1, UserId = userId };
-            var balance2 = new Balance { Currency = currency2, UserId = userId };
+            var balance1 = new Balance { Currency = currency1, UserId = userId, Type = new BalanceType {Name = BalanceTypes.Base.ToString() } };
+            var balance2 = new Balance { Currency = currency2, UserId = userId, Type = new BalanceType { Name = BalanceTypes.Personal.ToString() } };
             var balanceRepoMock = new Mock<IRepository<Balance>>();
             balanceRepoMock
                 .Setup(brm => brm.All())
@@ -124,9 +142,10 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                                         .Object);
 
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userRepoMock = new Mock<IRepository<User>>();
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act & Assert
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.UpdateUserBalanceByAmount(213, "Pesho"));
         }

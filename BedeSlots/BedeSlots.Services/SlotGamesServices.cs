@@ -1,8 +1,10 @@
 ﻿using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace BedeSlots.Services
@@ -10,21 +12,20 @@ namespace BedeSlots.Services
     public class SlotGamesServices : ISlotGamesServices
     {
         private readonly IMemoryCache cache;
-        private GameItemChanceOutOf100 rowUniqueItem;
 
         public SlotGamesServices(IMemoryCache cache)
         {
             this.cache = cache;
         }
 
-        public double Evaluate(List<List<GameItemChanceOutOf100>> slotMatrix)
+        public decimal Evaluate(List<List<GameItemChanceOutOf100>> slotMatrix)
         {
             if(slotMatrix.Count < 3 || slotMatrix[0].Count < 3)
             {
                 throw new ArgumentException("Slot matrix's dimentions should be atleast 3x3!");
             }
             var wildCard = GetEnumValuesCached().First();
-            double addedCoefs = 0;
+            decimal addedCoefs = 0;
             for (int i = 0; i < slotMatrix.Count; i++)
             {
                 bool rowJackpot = true;
@@ -47,15 +48,15 @@ namespace BedeSlots.Services
                     addedCoefs += CalculateJackpotRowCoeff(slotMatrix[i]);
                 }
             }
-            return addedCoefs / 10;
+            return addedCoefs;
         }
 
-        private double CalculateJackpotRowCoeff(List<GameItemChanceOutOf100> winningRow)
+        private decimal CalculateJackpotRowCoeff(List<GameItemChanceOutOf100> winningRow)
         {
-            double rowCoeff = 0;
+            decimal rowCoeff = 0;
             foreach(var item in winningRow)
             {
-                rowCoeff += (int)ConvertFromEnumToEnumCached<GameItemChanceOutOf100, GameItemCoeffsOutOf10>(item);
+                rowCoeff += GetCoefficient(item);
             }
             return rowCoeff;
         }
@@ -102,15 +103,15 @@ namespace BedeSlots.Services
 
             return slotMatrix;
         }
-        private To ConvertFromEnumToEnumCached<From, To>(From lastItem)
-            where From: Enum
-            where To: Enum
+        private decimal GetCoefficient(GameItemChanceOutOf100 item)
         {
-            return cache.GetOrCreate(lastItem.ToString(), entry =>
+            var cacheChances = cache.GetOrCreate("GameRowWinCoefficients", entry =>
             {
-                entry.SlidingExpiration = TimeSpan.FromHours(1);    
-                return (To)Enum.Parse(typeof(To), lastItem.ToString());
+                var coeffsAsJson = File.ReadAllText(@"..\..\..\..\BedeSlots.Services\GameCoefficients.json");
+                entry.SlidingExpiration = TimeSpan.FromHours(1);
+                return JsonConvert.DeserializeObject<Dictionary<string, decimal>>(coeffsAsJson);
             });
+            return cacheChances[item.ToString()];
         }
         private GameItemChanceOutOf100[] GetEnumValuesCached()
         {
