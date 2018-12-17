@@ -39,9 +39,9 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels
         public IEnumerable<SelectListItem> Currencies { get; set; }
 
         [Required]
-        [MinimumAge(18)]    
+        [MinimumAge(18, ErrorMessage = " You must be over the age of 18 in order to register!")]    
         [Display(Name = "Date of Birth")]
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
     }
 }

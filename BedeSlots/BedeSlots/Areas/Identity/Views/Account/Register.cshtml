@@ -37,11 +37,11 @@
                 <p>Note: you can not change your currency once set!</p>
                 <label asp-for="CurrencyName"></label>
                 <select asp-for="CurrencyName" class="selectpicker" name="CurrencyName" asp-items="@Model.Currencies"></select>
-               
+
             </div>
             <div class="form-group">
                 <label asp-for="DateOfBirth"></label>
-                <input asp-for="DateOfBirth" class="form-control" />
+                <input id="@nameof(@Model.DateOfBirth)" name="@nameof(@Model.DateOfBirth)" type="text" class="form-control datepicker" data-date-format='dd-mm-yyyy' />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-default">Register</button>
@@ -52,5 +52,11 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        $('.datepicker').datepicker({
+            endDate: '-18y'
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
 }

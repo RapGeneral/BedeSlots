@@ -5,15 +5,16 @@ using BedeSlots.ViewModels.GlobalViewModels;
 using System;
 using System.Threading.Tasks;
 using BedeSlots.Infrastructure.MappingProvider;
+using System.Linq;
 
 namespace BedeSlots.Services
 {
-    public class BankDetailsService : IBankDetailsServices
+    public class BankDetailsServices : IBankDetailsServices
     {
         private readonly IRepository<BankDetails> bankDetailsRepo;
         private readonly IMappingProvider mappingProvider;
 
-        public BankDetailsService(IRepository<BankDetails> bankDetailsRepo, IMappingProvider mappingProvider)
+        public BankDetailsServices(IRepository<BankDetails> bankDetailsRepo, IMappingProvider mappingProvider)
         {
             this.bankDetailsRepo = bankDetailsRepo;
             this.mappingProvider = mappingProvider;
@@ -21,6 +22,8 @@ namespace BedeSlots.Services
 
         public async Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate)
         {
+            //TODO add check if exists; If exists it should throw custom error
+            //Hook them to a user
             int dateResult = DateTime.Compare(expiryDate, DateTime.Now);
             
             if (dateResult < 0)
@@ -44,10 +47,13 @@ namespace BedeSlots.Services
             return model;
         }
 
-        public async Task<BankDetailsViewModel> DeleteBankDetailsAsync(Guid Id)
+        public async Task DeleteBankDetailsAsync(Guid Id)
         {
-            //TODO
-            throw new NotImplementedException();
+            var cardToRemove = bankDetailsRepo.All().Where(ctr => ctr.Id == Id).FirstOrDefault();
+
+            cardToRemove.IsDeleted = true;
+
+            await bankDetailsRepo.SaveAsync();
         }
     }
 }

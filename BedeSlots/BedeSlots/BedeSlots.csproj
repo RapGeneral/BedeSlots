@@ -18,7 +18,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Identity\Controllers\" />
-    <Folder Include="Areas\Identity\Views" />
   </ItemGroup>
 
   <ItemGroup>

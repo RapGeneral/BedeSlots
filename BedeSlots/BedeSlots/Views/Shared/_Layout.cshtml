@@ -17,6 +17,8 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
     @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
@@ -37,10 +39,10 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    @*@if (User.IsInRole("Admin"))*@
-                    @* { *@
+                    @if (User.IsInRole("Admin"))
+                     { 
                         <li><a asp-area="admin" asp-controller="Transactions" asp-action="Index">Transactions History</a></li>
-                    @* } *@
+                     } 
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

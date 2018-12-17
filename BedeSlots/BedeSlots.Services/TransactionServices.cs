@@ -102,8 +102,8 @@ namespace BedeSlots.Services
                 transactions = transactions.Where(tr => types.Any(type => tr.Type.Name.ToLower() == type.ToLower()));
             }
 
-            var foundedTrnasaciton = await transactions.ToListAsync();
+            var foundTrnasaciton = await transactions.ToListAsync();
 
-            return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundedTrnasaciton);
+            return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundTrnasaciton);
         }
     }}

@@ -8,6 +8,6 @@ namespace BedeSlots.Services.Contracts
     {
         Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate);
 
-        Task<BankDetailsViewModel> DeleteBankDetailsAsync(Guid Id);
+        Task DeleteBankDetailsAsync(Guid Id);
     }
 }
