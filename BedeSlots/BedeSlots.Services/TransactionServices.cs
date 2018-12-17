@@ -34,9 +34,20 @@ namespace BedeSlots.Services
                 .Include(b => b.Type)
                 .Where(b => b.UserId == userId && b.Type.Name == BalanceTypes.Base.ToString())
                 .FirstOrDefaultAsync();
+
+            if (balance is null)
+            {
+                throw new ArgumentNullException("Balance can`t be null");
+            }
+            
             var transactionType = await transactionTypeRepo.All()
                 .Where(t => t.Name.ToLower() == type.ToString().ToLower())
                 .FirstOrDefaultAsync();
+
+            if (transactionType is null)
+            {
+                throw new ArgumentNullException("Transaction type can`t be null");
+            }
 
             var transaction = new Transaction
             {
@@ -50,7 +61,7 @@ namespace BedeSlots.Services
 
             transactionRepo.Add(transaction);
             await transactionRepo.SaveAsync();
-
+            
             var model = mappingProvider.MapTo<TransactionViewModel>(transaction);
 
             return model;
@@ -80,12 +91,11 @@ namespace BedeSlots.Services
             {
                 if (max < min)
                 {
-                    throw new ArgumentOutOfRangeException("Max value can`t be greater than min value!");
+                    return new List<TransactionViewModel>();
                 }
                 transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
-            }
 
-
+            } 
             if (!(types is null) && types.Count != 0)
             {
                 transactions = transactions.Where(tr => types.Any(type => tr.Type.Name.ToLower() == type.ToLower()));
@@ -121,10 +131,10 @@ namespace BedeSlots.Services
 
             return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundTrnasaciton);
         }
-
         public async Task<ICollection<string>> GetTypesAsync()
         {
             return await transactionTypeRepo.All().Select(trt => trt.Name).ToListAsync();
         }
     }
 }
+
