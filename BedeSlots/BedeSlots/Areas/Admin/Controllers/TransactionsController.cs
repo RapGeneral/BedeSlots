@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BedeSlots.Areas.Admin.Models;
 using BedeSlots.DataModels;
-using BedeSlots.ViewModels.Providers;
+using BedeSlots.GlobalData.GlobalViewModels;
+using BedeSlots.GlobalData.Providers;
 using BedeSlots.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using X.PagedList;
-using BedeSlots.Areas.Admin.Models;
-using BedeSlots.ViewModels.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
-using BedeSlots.ViewModels.GlobalViewModels;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using X.PagedList;
 
 namespace BedeSlots.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
     [Route("[area]/[controller]/[action]")]
+    [Authorize(Roles = "Administrator")]
     public class TransactionsController : Controller
     {
         private readonly IMemoryCache cache;

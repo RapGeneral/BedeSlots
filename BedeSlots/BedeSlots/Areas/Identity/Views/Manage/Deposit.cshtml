@@ -3,6 +3,7 @@
     ViewData["Title"] = "Deposit";
     Layout = "~/Areas/Identity/Views/Manage/_Layout.cshtml";
 }
+
 <h4>@ViewData["Title"]</h4>
 <div id="status-message">
     @await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
@@ -12,11 +13,11 @@
     <div class="col-md-6">
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
+            <div id="card-selector" class="form-group">
                 @if (Model.UserCards.Count != 0)
                 {
                     <label asp-for="SelectedCard">Credit card: </label>
-                    <select asp-for="SelectedCard" class="selectpicker" asp-items="@Model.UserCards"></select>
+                    <select id="selected-card" asp-for="SelectedCard" class="selectpicker" asp-items="@Model.UserCards"></select>
                     <button id="open-card-modal" type="button" class="btn btn-success">Add Card</button>
                     <button id="remove-card" type="button" class="btn btn-danger">Remove Selected</button>
                 }
@@ -42,6 +43,14 @@
 </div>
 
 @section Scripts {
+    <script>
+        function getToken()
+        {
+            var token = '@Html.AntiForgeryToken()';
+            token = $(token).val();
+            return token;
+        }
+    </script>
     <script src="~/lib/card/dist/jquery.payform.min.js"></script>
     <script src="~/lib/card/dist/deposit.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>

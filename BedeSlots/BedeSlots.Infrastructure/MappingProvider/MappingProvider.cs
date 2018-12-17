@@ -3,7 +3,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using System.Linq;
 
-namespace BedeSlots.ViewModels.MappingProvider
+namespace BedeSlots.GlobalData.MappingProvider
 {
     public class MappingProvider : IMappingProvider
     {

@@ -1,4 +1,4 @@
-﻿namespace BedeSlots.ViewModels.Enums
+﻿namespace BedeSlots.GlobalData.Enums
 {
     public enum GameItemChanceOutOf100
     {

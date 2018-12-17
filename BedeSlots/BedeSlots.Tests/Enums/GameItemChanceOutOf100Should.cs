@@ -1,8 +1,8 @@
-﻿using BedeSlots.ViewModels.Enums;
+﻿using BedeSlots.GlobalData.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace BedeSlots.Tests.GlobalViewModels.Enums
+namespace BedeSlots.Tests.Enums
 {
     [TestClass]
     public class GameItemChanceOutOf100Should

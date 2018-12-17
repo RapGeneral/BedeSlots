@@ -1,7 +1,7 @@
 ﻿using BedeSlots.Areas.Admin.Controllers;
 using BedeSlots.DataModels;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.Providers;
+using BedeSlots.GlobalData.Providers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,7 +1,41 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<link href="~/css/boxes.css" rel="stylesheet" type="text/css" />
 
-<a asp-action="SlotGame" asp-controller="Home" asp-route-N="3" asp-route-M="3">3x3</a>
-<a asp-action="SlotGame" asp-controller="Home" asp-route-N="5" asp-route-M="5">5x5</a>
-<a asp-action="SlotGame" asp-controller="Home" asp-route-N="5" asp-route-M="5">8x5</a>
+<br />
+<div class="row">
+    <div class="col-3 col-sm-6 col-md-6 col-lg-4 col-xl-3 px-3 mb-4">
+        <div class="gb">
+            <a asp-action="SlotGame" asp-controller="Home" asp-route-N="4" asp-route-M="3">
+                <div class="position-relative"><span class="ic"></span></div><div class="position-relative">
+                    <img class="img-fluid" src="~/images/slotGame.jpg" alt="Slots 4x3" width="512" height="336">
+                    <div class="ma"><span>Play<br>Now</span></div>
+                </div>
+                <div class="t">Slots 4x3</div>
+            </a>
+        </div>
+    </div>
+    <div class="col-3 col-sm-6 col-md-6 col-lg-4 col-xl-3 px-3 mb-4">
+        <div class="gb">
+            <a asp-action="SlotGame" asp-controller="Home" asp-route-N="5" asp-route-M="5">
+                <div class="position-relative"><span class="ic"></span></div><div class="position-relative">
+                    <img class="img-fluid" src="~/images/slotGame.jpg" alt="Slots 5x5" width="512" height="336">
+                    <div class="ma"><span>Play<br>Now</span></div>
+                </div>
+                <div class="t">Slots 5x5</div>
+            </a>
+        </div>
+    </div>
+    <div class="col-3 col-sm-6 col-md-6 col-lg-4 col-xl-3 px-3 mb-4">
+        <div class="gb">
+            <a asp-action="SlotGame" asp-controller="Home" asp-route-N="5" asp-route-M="5">
+                <div class="position-relative"><span class="ic"></span></div><div class="position-relative">
+                    <img class="img-fluid" src="~/images/slotGame.jpg" alt="Slots 8x5" width="512" height="336">
+                    <div class="ma"><span>Play<br>Now</span></div>
+                </div>
+                <div class="t">Slots 8x5</div>
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using BedeSlots.DataModels;
-using BedeSlots.ViewModels.GlobalViewModels;
+using BedeSlots.GlobalData.GlobalViewModels;
 
-namespace BedeSlots.ViewModels.MappingProvider.Mappings
+namespace BedeSlots.GlobalData.MappingProvider.Mappings
 {
     public class BalanceToMoneyViewModel : Profile
     {

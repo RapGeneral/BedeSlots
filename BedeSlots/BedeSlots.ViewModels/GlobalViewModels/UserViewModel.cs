@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BedeSlots.ViewModels.GlobalViewModels
+namespace BedeSlots.GlobalData.GlobalViewModels
 {
     public class UserViewModel
     {

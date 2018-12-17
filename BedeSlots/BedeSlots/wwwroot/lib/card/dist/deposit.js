@@ -60,6 +60,7 @@ $(function () {
             const dataToSend = $creditCardForm.serialize();
 
             $.post($creditCardForm.attr('action'), dataToSend, function (result) {
+                reload(500) 
                 $('#status-message').html(result);
             }); 
 
@@ -72,14 +73,39 @@ $(function () {
         $('#credid-card-modal')
             .find("input")
             .val('')
-            .end()
+            .end();
+    }
+
+    function reload(timeout) {
+        setTimeout(function () {
+            window.location.reload(false);
+        }, timeout);
     }
 
     $('.datepicker').datepicker({
         startDate: '0y'
     });
+
+    $('#remove-card').click(function () {
+        const cardId = $("#selected-card").val();
+        $.ajax({
+            url: $(location).attr('href'),
+            type: 'DELETE',
+            cache: false,
+            data: jQuery.param({
+                cardId: cardId,
+                __RequestVerificationToken: getToken()
+            }),
+            success: function (result) {
+                reload(500);
+                $('#status-message').html(result);
+            }
+        });
+    })
+
+    $('#open-card-modal').click(function () {
+        $('#credid-card-modal').modal('show');
+    });
 });
 
-$('#open-card-modal').click(function () {
-    $('#credid-card-modal').modal('show');
-});
+

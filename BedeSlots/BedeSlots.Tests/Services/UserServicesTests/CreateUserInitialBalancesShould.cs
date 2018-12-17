@@ -1,7 +1,8 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.ViewModels.MappingProvider;
 using BedeSlots.Services;
+using BedeSlots.GlobalData.Enums;
+using BedeSlots.GlobalData.MappingProvider;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
@@ -16,6 +17,21 @@ namespace BedeSlots.Tests.Services.UserServicesTests
     [TestClass]
     public class CreateUserInitialBalancesShould
     {
+        [TestMethod]
+        public async Task ThrowArgumentNullException_WhenUserIdIsNull()
+        {
+            //Arrange
+            var mappingProviderMock = new Mock<IMappingProvider>();
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            var currencyRepoMock = new Mock<IRepository<Currency>>();
+            var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var userRepoMock = new Mock<IRepository<User>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
+            var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
+            //Act && Assert
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.CreateUserInitialBalances(null, "notNull"));
+        }
         [TestMethod]
         public async Task CreateTwoUserBalances()
         {
@@ -51,16 +67,27 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                 .Returns(Task.CompletedTask);
 
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+
+            var balanceTypeBase = new BalanceType { Name = "Base" };
+            var balanceTypeNative = new BalanceType { Name = "Personal" };
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
+            balanceTypeRepo
+                .Setup(btr => btr.All())
+                .Returns(new List<BalanceType> { balanceTypeBase, balanceTypeNative }
+                            .AsQueryable()
+                            .BuildMock()
+                            .Object);
+
             var userRepoMock = new Mock<IRepository<User>>();
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act
             await sut.CreateUserInitialBalances(userId, nativeCurrency);
             //Assert
             balanceRepoMock.Verify(brm => brm.AddAsync(It.IsAny<Balance>()), Times.Exactly(2));
             balanceRepoMock.Verify(brm => brm.SaveAsync(), Times.Once);
-            Assert.IsTrue(newlyCreatedBalances.Any(ncb => ncb.Currency.CurrencyName == nativeCurrency));
-            Assert.IsTrue(newlyCreatedBalances.Any(ncb => ncb.Currency.CurrencyName == baseCurrency));
+            Assert.IsTrue(newlyCreatedBalances.Any(ncb => ncb.Currency.CurrencyName == nativeCurrency && ncb.Type.Name == BalanceTypes.Personal.ToString()));
+            Assert.IsTrue(newlyCreatedBalances.Any(ncb => ncb.Currency.CurrencyName == baseCurrency && ncb.Type.Name == BalanceTypes.Base.ToString()));
             Assert.IsTrue(newlyCreatedBalances.All(ncb => ncb.UserId == userId));
         }
         [TestMethod]
@@ -73,9 +100,10 @@ namespace BedeSlots.Tests.Services.UserServicesTests
             var balanceRepoMock = new Mock<IRepository<Balance>>();
             var newlyCreatedBalances = new List<Balance>();
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userRepoMock = new Mock<IRepository<User>>();
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act & Assert
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.CreateUserInitialBalances("awdawd", null));
         }
@@ -91,15 +119,16 @@ namespace BedeSlots.Tests.Services.UserServicesTests
             var balanceRepoMock = new Mock<IRepository<Balance>>();
             balanceRepoMock
                 .Setup(brm => brm.All())
-                .Returns(new List<Balance> { new Balance {UserId = userId } }
+                .Returns(new List<Balance> { new Balance { UserId = userId } }
                                         .AsQueryable()
                                         .BuildMock()
                                         .Object);
 
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userRepoMock = new Mock<IRepository<User>>();
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act
             await Assert.ThrowsExceptionAsync<ArgumentException>(() => sut.CreateUserInitialBalances(userId, "randomCur"));
         }
@@ -132,9 +161,10 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                                         .Object);
 
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             var userRepoMock = new Mock<IRepository<User>>();
 
-            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object, balanceTypeRepo.Object);
             //Act
             await Assert.ThrowsExceptionAsync<ArgumentException>(() => sut.CreateUserInitialBalances("randomuserid", searchedCurrency));
         }

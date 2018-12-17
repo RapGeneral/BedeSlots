@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BedeSlots</title>
 
-
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -36,12 +35,13 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li> <a asp-action="SlotGame" asp-controller="Home" asp-route-N="3" asp-route-M="3">Slots 3x3</a></li>
+                    <li> <a asp-action="SlotGame" asp-controller="Home" asp-route-N="4" asp-route-M="3">Slots 4x3</a></li>
                     <li><a asp-action="SlotGame" asp-controller="Home" asp-route-N="5" asp-route-M="5">Slots 5x5</a></li>
                     <li><a asp-action="SlotGame" asp-controller="Home" asp-route-N="8" asp-route-M="5">Slots 8x5</a></li>
-                    @if (User.IsInRole("Admin"))
+                    @if (User.IsInRole(UserRoles.Administrator.ToString()))
                     {
                         <li><a asp-area="admin" asp-controller="Transactions" asp-action="Index">Transactions History</a></li>
+                        <li><a asp-area="admin" asp-controller="Users" asp-action="Index">User Dashboard</a></li>
                     }
                 </ul>
                 <partial name="_LoginPartial" />

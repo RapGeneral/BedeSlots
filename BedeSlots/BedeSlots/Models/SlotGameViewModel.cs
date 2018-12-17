@@ -1,4 +1,4 @@
-﻿using BedeSlots.ViewModels.Enums;
+﻿using BedeSlots.GlobalData.Enums;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

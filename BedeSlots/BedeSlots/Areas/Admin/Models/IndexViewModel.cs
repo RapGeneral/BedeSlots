@@ -1,4 +1,4 @@
-﻿using BedeSlots.ViewModels.GlobalViewModels;
+﻿using BedeSlots.GlobalData.GlobalViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
