@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Moq;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 
 namespace BedeSlots.Tests.Services.SlotGamesServicesTests
 {
@@ -20,7 +23,8 @@ namespace BedeSlots.Tests.Services.SlotGamesServicesTests
         {
             //Arrange
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
-            var sut = new SlotGamesServices(memoryCache);
+            var readerMock = new Mock<IFileReader>();
+            var sut = new SlotGamesServices(memoryCache, readerMock.Object);
             var matrix = new List<List<GameItemChanceOutOf100>>();
             for (int i = 0; i < n; i++)
             {
@@ -74,7 +78,13 @@ namespace BedeSlots.Tests.Services.SlotGamesServicesTests
         {
             //Arrange
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
-            var sut = new SlotGamesServices(memoryCache);
+
+            var readerMock = new Mock<IFileReader>();
+            readerMock
+                .Setup(rm => rm.ReadAllFrom(It.IsAny<string>()))
+                .Returns(File.ReadAllText(@"..\..\..\..\BedeSlots.Services\GameCoefficients.json"));
+
+            var sut = new SlotGamesServices(memoryCache, readerMock.Object);
             //Act
             var coeff = sut.Evaluate(slotMatrix);
             //Assert

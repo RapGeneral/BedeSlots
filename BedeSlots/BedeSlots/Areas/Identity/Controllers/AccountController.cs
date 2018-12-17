@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 
 namespace BedeSlots.Areas.Identity.Controllers
 {
@@ -19,15 +20,15 @@ namespace BedeSlots.Areas.Identity.Controllers
 	[Route("[controller]/[action]")]
 	public class AccountController : Controller
 	{
-		private readonly UserManager<User> userManager;
-		private readonly SignInManager<User> signinManager;
+		private readonly IUserManager<User> userManager;
+		private readonly ISignInManager<User> signinManager;
         private readonly IMemoryCache memoryCache;
         private readonly ICurrencyServices currencyServices;
 		private readonly IUserServices userServices;
 
 		public AccountController(
-			UserManager<User> userManager,
-			SignInManager<User> signInManager,
+			IUserManager<User> userManager,
+			ISignInManager<User> signInManager,
             IMemoryCache memoryCache,
 			IUserServices userServices,
             ICurrencyServices currencyServices)
@@ -38,9 +39,6 @@ namespace BedeSlots.Areas.Identity.Controllers
             this.currencyServices = currencyServices;
 			this.userServices = userServices;
 		}
-
-		[TempData]
-		public string ErrorMessage { get; set; }
 
 		public async Task<IActionResult> Login()
 		{
