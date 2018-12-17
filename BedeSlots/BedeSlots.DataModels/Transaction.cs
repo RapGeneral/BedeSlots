@@ -1,7 +1,4 @@
-﻿using BedeSlots.DataModels.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace BedeSlots.DataModels
 {
@@ -17,7 +14,7 @@ namespace BedeSlots.DataModels
 
         public string Description { get; set; }
 
-        public decimal Amount { get; set; }        
+        public decimal Amount { get; set; }
 
         public decimal OpeningBalance { get; set; }
 

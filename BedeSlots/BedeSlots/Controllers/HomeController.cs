@@ -1,35 +1,34 @@
 ﻿using BedeSlots.DataModels;
+using BedeSlots.GlobalData.Enums;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 using BedeSlots.Models;
 using BedeSlots.Services.Contracts;
-using BedeSlots.GlobalData.Enums;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace BedeSlots.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signinManager;
+        private readonly IJsonConverter jsonConverter;
+        private readonly IUserManager<User> userManager;
         private readonly IUserServices userServices;
         private readonly ITransactionServices transactionServices;
         private readonly ISlotGamesServices slotGameServices;
 
         public HomeController(
-            UserManager<User> userManager,
-            SignInManager<User> signinManager,
+            IUserManager<User> userManager,
             ITransactionServices transactionServices,
             IUserServices userServices,
-            ISlotGamesServices slotGameServices)
+            ISlotGamesServices slotGameServices,
+            IJsonConverter jsonConverter)
         {
+            this.jsonConverter = jsonConverter;
             this.userManager = userManager;
-            this.signinManager = signinManager;
             this.userServices = userServices ?? throw new System.ArgumentNullException(nameof(userServices));
             this.transactionServices = transactionServices;
             this.slotGameServices = slotGameServices;
@@ -53,37 +52,36 @@ namespace BedeSlots.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SlotGame(SlotGameViewModel model)
         {
-            //Also check if the games are exactly 3x3, 5x5 and 8x5
             if (!ModelState.IsValid)
             {
                 Response.StatusCode = 400;
-                return this.PartialView("_StatusMessage", "Error: Incorrect format!");
+                return PartialView("_StatusMessage", "Error: Incorrect format!");
             }
             var userId = userManager.GetUserId(User);
             var balanceInfo = await userServices.GetBalanceInformation(userId);
-            if(balanceInfo.Amount - model.Stake < 0)
+            if (balanceInfo.Amount - model.Stake < 0)
             {
                 Response.StatusCode = 400;
-                return this.PartialView("_StatusMessage", "Error: You cant bet more than what you have!");
+                return PartialView("_StatusMessage", "Error: You cant bet more than what you have!");
             }
             var usdChangeOfStake = await userServices.UpdateUserBalanceByAmount(-model.Stake, userId);
             await transactionServices.CreateTransactionAsync(TypeOfTransaction.Stake, "Stake", usdChangeOfStake, userId);
             var gameMatrix = slotGameServices.Run(model.N, model.M);
             var coef = slotGameServices.Evaluate(gameMatrix);
             var earnings = model.Stake * coef;
-            if(coef != 0)
+            if (coef != 0)
             {
                 var usdChangeOfEarnings = await userServices.UpdateUserBalanceByAmount(earnings, userId);
                 await transactionServices.CreateTransactionAsync(TypeOfTransaction.Win, "Win", usdChangeOfEarnings, userId);
             }
             //serialize matrix to json
-            string result = JsonConvert.SerializeObject(gameMatrix, new JsonSerializerSettings
+            string result = jsonConverter.SerializeObject(gameMatrix, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 Formatting = Formatting.None,
                 Converters = new List<JsonConverter> { new StringEnumConverter() }
             });
-            return this.Json(result);
+            return Json(result);
         }
 
         [HttpGet]
@@ -91,12 +89,6 @@ namespace BedeSlots.Controllers
         public IActionResult Money()
         {
             return ViewComponent(nameof(Money));
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BedeSlots.Areas.Admin.Controllers;
 using BedeSlots.DataModels;
-using BedeSlots.GlobalData.Providers;
 using BedeSlots.Services.Contracts;
 using BedeSlots.GlobalData.GlobalViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using X.PagedList;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 
 namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
 {
@@ -27,7 +27,7 @@ namespace BedeSlots.Tests.Web.Areas.Admin.ControllerTests.UserControllerTests
                 .ReturnsAsync(new List<UserViewModel>());
             var sut = new UsersController(userManagerMock.Object, userServicesMock.Object);
             //Act
-            var result = await sut.UserGrid(21, userName) as PartialViewResult;
+            var result = await sut.UserGrid(21, userName);
             //Assert
             userServicesMock.Verify(usm => usm.SearchByUsernameAsync(userName), Times.Once);
         }

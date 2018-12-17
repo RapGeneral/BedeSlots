@@ -1,7 +1,7 @@
 ﻿using BedeSlots.Areas.Admin.Models;
 using BedeSlots.DataModels;
 using BedeSlots.GlobalData.GlobalViewModels;
-using BedeSlots.GlobalData.Providers;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,8 +34,6 @@ namespace BedeSlots.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index(int? page, string username, int? min, int? max, string types, string sortBy, bool descending)
         {
-
-
             var resultTransactions = await transcationServices.SearchTransactionAsync(username, min, max, types?.Split(','), sortBy, descending);
 
             var pagedTransactions = await resultTransactions.ToPagedListAsync(page ?? 1, PAGE_SIZE);

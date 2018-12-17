@@ -3,7 +3,6 @@ using BedeSlots.DataContext;
 using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
 using BedeSlots.GlobalData.MappingProvider;
-using BedeSlots.GlobalData.Providers;
 using BedeSlots.Services;
 using BedeSlots.Services.Contracts;
 using BedeSlots.Services.Utilities;
@@ -17,6 +16,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using BedeSlots.Utilities.Extentions;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 
 namespace BedeSlots
 {
@@ -49,6 +50,9 @@ namespace BedeSlots
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
+            services.AddScoped(typeof(ISignInManager<>), typeof(SignInManagerWrapper<>));
+            services.AddSingleton<IFileReader,FileReader>();
+            services.AddSingleton<IJsonConverter, JsonConvertor>();
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<ITransactionServices, TransactionServices>();
             services.AddScoped<IMappingProvider, MappingProvider>();

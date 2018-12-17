@@ -1,6 +1,6 @@
 ﻿using BedeSlots.DataModels;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 using BedeSlots.Services.Contracts;
-using BedeSlots.GlobalData.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

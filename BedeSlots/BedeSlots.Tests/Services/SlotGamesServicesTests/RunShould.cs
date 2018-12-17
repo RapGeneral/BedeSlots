@@ -1,6 +1,8 @@
-﻿using BedeSlots.Services;
+﻿using BedeSlots.Infrastructure.Providers.Interfaces;
+using BedeSlots.Services;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 
 namespace BedeSlots.Tests.Services.SlotGamesServicesTests
@@ -16,7 +18,8 @@ namespace BedeSlots.Tests.Services.SlotGamesServicesTests
         {
             //Arrange
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
-            var sut = new SlotGamesServices(memoryCache);
+            var readerMock = new Mock<IFileReader>();
+            var sut = new SlotGamesServices(memoryCache, readerMock.Object);
             //Act && Assert
             Assert.ThrowsException<ArgumentException>(() => sut.Run(n, m));
         }
@@ -29,29 +32,30 @@ namespace BedeSlots.Tests.Services.SlotGamesServicesTests
         {
             //Arrange
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
-            var sut = new SlotGamesServices(memoryCache);
+            var readerMock = new Mock<IFileReader>();
+            var sut = new SlotGamesServices(memoryCache, readerMock.Object);
             bool hasCorrectDimentions = true;
-            bool doesntHave0Items = true; 
+            bool doesntHave0Items = true;
             //0 Items will check two things:
             //First, if every cell is populated
             //Second, if there are any items, whose values are 0 (for whatever reason...)
             //Act
             var result = sut.Run(n, m);
             //Assert
-            if(result.Count != n)
+            if (result.Count != n)
             {
                 hasCorrectDimentions = false;
             }
             for (int i = 0; i < n; i++)
             {
-                if(result[i].Count != m)
+                if (result[i].Count != m)
                 {
                     hasCorrectDimentions = false;
                     break;
                 }
                 for (int j = 0; j < m; j++)
                 {
-                    if((int)result[i][j] == 0)
+                    if ((int)result[i][j] == 0)
                     {
                         doesntHave0Items = false;
                     }

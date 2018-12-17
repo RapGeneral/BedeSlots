@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace BedeSlots.GlobalData.Providers
+namespace BedeSlots.Infrastructure.Providers.Interfaces
 {
     public interface IUserManager<T> where T : class
     {
@@ -20,5 +20,7 @@ namespace BedeSlots.GlobalData.Providers
         UserManager<T> Instance { get; }
         Task<IdentityResult> AddToRoleAsync(T user, string role);
         Task<IdentityResult> RemoveFromRoleAsync(T user, string role);
+        string GetUserId(ClaimsPrincipal principal);
+        Task<IdentityResult> CreateAsync(T user, string password);
     }
 }

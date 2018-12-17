@@ -1,26 +1,28 @@
-﻿using BedeSlots.Services.Contracts;
-using BedeSlots.GlobalData.Enums;
+﻿using BedeSlots.GlobalData.Enums;
+using BedeSlots.Infrastructure.Providers.Interfaces;
+using BedeSlots.Services.Contracts;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace BedeSlots.Services
 {
     public class SlotGamesServices : ISlotGamesServices
     {
+        private readonly IFileReader reader;
         private readonly IMemoryCache cache;
 
-        public SlotGamesServices(IMemoryCache cache)
+        public SlotGamesServices(IMemoryCache cache, IFileReader reader)
         {
+            this.reader = reader;
             this.cache = cache;
         }
 
         public decimal Evaluate(List<List<GameItemChanceOutOf100>> slotMatrix)
         {
-            if(slotMatrix.Count < 3 || slotMatrix[0].Count < 3)
+            if (slotMatrix.Count < 3 || slotMatrix[0].Count < 3)
             {
                 throw new ArgumentException("Slot matrix's dimentions should be atleast 3x3!");
             }
@@ -33,11 +35,11 @@ namespace BedeSlots.Services
                 GameItemChanceOutOf100 rowUniqueItem = wildCard;
                 for (int j = 0; j < slotMatrix[i].Count; j++)
                 {
-                    if(rowUniqueItem == wildCard && slotMatrix[i][j] != wildCard)
+                    if (rowUniqueItem == wildCard && slotMatrix[i][j] != wildCard)
                     {
                         rowUniqueItem = slotMatrix[i][j];
                     }
-                    if(slotMatrix[i][j] != rowUniqueItem && slotMatrix[i][j] != wildCard)
+                    if (slotMatrix[i][j] != rowUniqueItem && slotMatrix[i][j] != wildCard)
                     {
                         rowJackpot = false;
                         break;
@@ -54,7 +56,7 @@ namespace BedeSlots.Services
         private decimal CalculateJackpotRowCoeff(List<GameItemChanceOutOf100> winningRow)
         {
             decimal rowCoeff = 0;
-            foreach(var item in winningRow)
+            foreach (var item in winningRow)
             {
                 rowCoeff += GetCoefficient(item);
             }
@@ -63,7 +65,7 @@ namespace BedeSlots.Services
 
         public List<List<GameItemChanceOutOf100>> Run(int n, int m)
         {
-            if(n < 3 || m < 3)
+            if (n < 3 || m < 3)
             {
                 throw new ArgumentException("Slot matrix's dimentions should be atleast 3x3!");
             }
@@ -71,7 +73,7 @@ namespace BedeSlots.Services
             var enumValues = GetEnumValuesCached();
             //The chance margine represents a number from 0 to 100.
             //If a number is bigger than it and generated from 0 to 100, it has happend at %of number that the margin represents.
-            int[] chanceMargins = cache.GetOrCreate("ChanceMargin", entry => 
+            int[] chanceMargins = cache.GetOrCreate("ChanceMargin", entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
                 int[] newChanceMargins = new int[enumValues.Length];
@@ -107,7 +109,7 @@ namespace BedeSlots.Services
         {
             var cacheChances = cache.GetOrCreate("GameRowWinCoefficients", entry =>
             {
-                var coeffsAsJson = File.ReadAllText(@"..\..\..\..\BedeSlots.Services\GameCoefficients.json");
+                var coeffsAsJson = reader.ReadAllFrom(@"..\BedeSlots.Services\GameCoefficients.json");
                 entry.SlidingExpiration = TimeSpan.FromHours(1);
                 return JsonConvert.DeserializeObject<Dictionary<string, decimal>>(coeffsAsJson);
             });
