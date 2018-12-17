@@ -5,6 +5,7 @@ namespace BedeSlots.ViewModels.GlobalViewModels
 {
     public class BankDetailsViewModel
     {
+        public string Id { get; set; }
         [Required]
         [CreditCard]
         public string Number { get; set; }

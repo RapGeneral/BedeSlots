@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +17,7 @@ namespace BedeSlots.Areas.Identity.Controllers
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
+        private readonly IUserBankDetailsServices userBankDetailsServices;
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signinManager;
         private readonly IUserServices userServices;
@@ -29,8 +29,10 @@ namespace BedeSlots.Areas.Identity.Controllers
             SignInManager<User> signinManager,
             ITransactionServices transactionServices,
             IUserServices userServices,
-            IBankDetailsServices bankDetailsServices)
+            IBankDetailsServices bankDetailsServices,
+            IUserBankDetailsServices userBankDetailsServices)
         {
+            this.userBankDetailsServices = userBankDetailsServices;
             this.userManager = userManager;
             this.signinManager = signinManager;
             this.userServices = userServices;
@@ -50,9 +52,17 @@ namespace BedeSlots.Areas.Identity.Controllers
             var model = new DepositViewModel
             {
                 StatusMessage = StatusMessage,
-                UserCards = userCards.Select(uc => new SelectListItem(uc.Number, uc.Number)).ToList()
+                UserCards = userCards.Select(uc => new SelectListItem(uc.Number, uc.Id)).ToList()
             };
             return View(model);
+        }
+        [HttpDelete]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Deposit(string cardId)
+        {
+            var detachedCard = await userBankDetailsServices.DeleteUserBankDetailsAsync(cardId, userManager.GetUserId(User));
+            return this.PartialView("_StatusMessage", $"Successfully deleted the card with #{detachedCard.Number}!");
         }
 
         [HttpPost]
@@ -118,7 +128,7 @@ namespace BedeSlots.Areas.Identity.Controllers
 
         [HttpPost]
         [Authorize]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCreditCard(BankDetailsViewModel model)
         {
             if (!ModelState.IsValid)
@@ -126,7 +136,7 @@ namespace BedeSlots.Areas.Identity.Controllers
                 return this.PartialView("_StatusMessage", "Error: Wrong format!");
             }
 
-            var newBankDetails = await bankDetailsServices.AddBankDetailsAsync(model.Number, model.Cvv, model.ExpiryDate);
+            var newBankDetails = await bankDetailsServices.AddBankDetailsAsync(model.Number, model.Cvv, model.ExpiryDate, userManager.GetUserId(User));
 
             return this.PartialView("_StatusMessage", "Successfully added the new credit card!");
         }

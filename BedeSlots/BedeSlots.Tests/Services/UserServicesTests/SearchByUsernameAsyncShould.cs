@@ -82,8 +82,6 @@ namespace BedeSlots.Tests.Services.UserServicesTests
             //Act
             var result = await sut.SearchByUsernameAsync(searchString);
             //Assert
-            userRepoMock.Verify(urm => urm.All(), Times.Once);
-            mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<UserViewModel>>(It.IsAny<List<User>>()), Times.Once);
             Assert.IsTrue(mapInput.Count == 2);
             Assert.IsTrue(mapInput.Any(u => u.UserName.ToLower() == nameToBeFound1.ToLower()));
             Assert.IsTrue(mapInput.Any(u => u.UserName.ToLower() == nameToBeFound2.ToLower()));

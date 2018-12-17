@@ -17,6 +17,20 @@ namespace BedeSlots.Tests.Services.UserServicesTests
     [TestClass]
     public class UpdateUserBalanceByAmountShould
     {
+        [TestMethod]
+        public async Task ThrowArgumentNullException_WhenUserIdIsNull()
+        {
+            //Arrange
+            var mappingProviderMock = new Mock<IMappingProvider>();
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            var currencyRepoMock = new Mock<IRepository<Currency>>();
+            var balanceRepoMock = new Mock<IRepository<Balance>>();
+            var userRepoMock = new Mock<IRepository<User>>();
+            var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
+            var sut = new UserServices(userRepoMock.Object, mappingProviderMock.Object, memoryCache, currencyRepoMock.Object, balanceRepoMock.Object, userBankDetailsMock.Object);
+            //Act && Assert
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.UpdateUserBalanceByAmount(102, null));
+        }
         [DataTestMethod]
         [DataRow(10)]
         [DataRow(-10)]

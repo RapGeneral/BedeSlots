@@ -57,6 +57,10 @@ namespace BedeSlots.Services
 
         public async Task<decimal> UpdateUserBalanceByAmount(decimal nativeMoney, string userId)
         {
+            if (userId is null)
+            {
+                throw new ArgumentNullException("UserId cannot be null!");
+            }
             var userBalances = await balanceRepo.All()
                                         .Where(b => b.UserId == userId)
                                         .Include(b => b.Currency)
@@ -81,6 +85,10 @@ namespace BedeSlots.Services
 
         public async Task CreateUserInitialBalances(string userId, string nativeCurrency)
         {
+            if (userId is null)
+            {
+                throw new ArgumentNullException("UserId cannot be null!");
+            }
             if (string.IsNullOrEmpty(nativeCurrency))
             {
                 throw new ArgumentNullException("Cannot create user balances with null native currency!");
@@ -104,12 +112,14 @@ namespace BedeSlots.Services
             var nativeBalance = new Balance
             {
                 UserId = userId,
-                Currency = currencies.First(cur => cur.CurrencyName.ToLower() == nativeCurrency.ToLower())
+                Currency = currencies.First(cur => cur.CurrencyName.ToLower() == nativeCurrency.ToLower()),
+                Type = new BalanceType{ Name = BalanceTypes.Personal.ToString() }
             };
             var baseBalance = new Balance
             {
                 UserId = userId,
-                Currency = currencies.First(cur => cur.CurrencyName.ToLower() == BASE_CURRENCY.ToLower())
+                Currency = currencies.First(cur => cur.CurrencyName.ToLower() == BASE_CURRENCY.ToLower()),
+                Type = new BalanceType{ Name = BalanceTypes.Base.ToString() }
             };
 
             await balanceRepo.AddAsync(nativeBalance);
@@ -119,23 +129,33 @@ namespace BedeSlots.Services
 
         public async Task<MoneyViewModel> GetBalanceInformation(string userId)
         {
-            var userBalnace = await balanceRepo.All()
-                .Include(bal => bal.Currency)
-                .Where(bal => bal.UserId == userId).FirstOrDefaultAsync();
-            //THIS HAS TODO!!! && bal is the base one
-
-            if(userBalnace is null)
+            if (userId is null)
             {
-                throw new ArgumentException("User not found!");
+                throw new ArgumentNullException("UserId cannot be null!");
             }
-            var model = mappingProvider.MapTo<MoneyViewModel>(userBalnace);
+            var userBalance = await balanceRepo.All()
+                .Include(bal => bal.Currency)
+                .Include(bal => bal.Type)
+                .Where(bal => bal.UserId == userId 
+                    && bal.Type.Name == BalanceTypes.Personal.ToString())
+                .FirstOrDefaultAsync();
+
+            if(userBalance is null)
+            {
+                throw new ArgumentException("User balance is not found!");
+            }
+            var model = mappingProvider.MapTo<MoneyViewModel>(userBalance);
             return model;
         }
 
         public async Task<ICollection<BankDetailsViewModel>> GetBankDetailsInformation(string userId)
         {
+            if(userId is null)
+            {
+                throw new ArgumentNullException("UserId cannot be null!");
+            }
             var userBankDetails = await userBankDetailsRepo.All()
-                                    .Where(bd => bd.UserId == userId)
+                                    .Where(bd => bd.UserId == userId && !bd.IsDeleted)
                                     .Select(ubd => ubd.BankDetails)
                                     .ToListAsync();
 

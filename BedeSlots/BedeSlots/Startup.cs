@@ -53,6 +53,7 @@ namespace BedeSlots
             services.AddScoped<ICurrencyServices, CurrencyServices>();
             services.AddScoped<IBankDetailsServices, BankDetailsServices>();
             services.AddScoped<ISlotGamesServices, SlotGamesServices>();
+            services.AddScoped<IUserBankDetailsServices, UserBankDetailsServices>();
 
             services.AddMemoryCache();
             services.AddAutoMapper();
