@@ -56,6 +56,7 @@ namespace BedeSlots
             services.AddScoped<IBankDetailsServices, BankDetailsServices>();
             services.AddScoped<ISlotGamesServices, SlotGamesServices>();
             services.AddScoped<IUserBankDetailsServices, UserBankDetailsServices>();
+            services.AddScoped<IDateTimeWrapper, DateTimeWrapper>();
 
             services.AddMemoryCache();
             services.AddAutoMapper();
