@@ -26,8 +26,6 @@ namespace BedeSlots.Services
 
         public async Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate, string userId)
         {
-            //TODO add check if exists; If exists it should throw custom error
-            //Hook them to a user
             int dateResult = DateTime.Compare(expiryDate, DateTime.Now);
 
             if (dateResult < 0)
@@ -35,6 +33,25 @@ namespace BedeSlots.Services
                 throw new ArgumentOutOfRangeException("The card is expired!");
             }
 
+            var potentialBankDetails = await bankDetailsRepo.All().Where(bd => bd.Number == number).FirstOrDefaultAsync();
+            if(!(potentialBankDetails is null))
+            {
+                var potentialUserBankDetails = await userBankDetailsRepo.All()
+                                        .Where(ubd => ubd.UserId == userId 
+                                            && ubd.BankDetailsId == potentialBankDetails.Id)
+                                        .FirstOrDefaultAsync();
+                if (potentialUserBankDetails.IsDeleted)
+                {
+                    potentialUserBankDetails.IsDeleted = false;
+                    await userBankDetailsRepo.SaveAsync();
+                    var modelToReturn = mappingProvider.MapTo<BankDetailsViewModel>(potentialBankDetails);
+                    return modelToReturn;
+                }
+                else
+                {
+                    throw new ArgumentException("Bank details already exists and it is connected to the user!");
+                }
+            }
 
             var bankDetails = new BankDetails
             {

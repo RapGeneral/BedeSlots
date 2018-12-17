@@ -26,7 +26,7 @@
         <input asp-for="M" value="@Model.M" type="hidden" />
         <input asp-for="N" value="@Model.N" type="hidden" />
         <div class="form-group">
-            <button id="winwinwin2" type="submit" class="btn btn-default center-block">Spin</button>
+            <button id="play-game" type="submit" class="btn btn-default center-block">Spin</button>
         </div>
     </form>
 </div>
@@ -55,7 +55,7 @@
             }
             ezslots[@Model.N - 1] = new EZSlots(`@SLOT_DIV_CONTAINER_NAME${@Model.N - 1}`, { "reelCount": @Model.M, "winningSet": emptyRow, "symbols": images, "height": 126, "width": 126, "callback": callbackFunction });
             //events
-            $("#winwinwin2").click(function (e) {
+            $("#play-game").click(function (e) {
                 e.preventDefault();
                 const $stakeForm = $('#stake-form');
                 const dataToSend = $stakeForm.serialize();

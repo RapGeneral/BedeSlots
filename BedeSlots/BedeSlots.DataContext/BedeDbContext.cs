@@ -45,12 +45,7 @@ namespace BedeSlots.DataContext
                 .WithMany(b => b.Transactions)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            var typeStrings = Enum.GetNames(typeof(GlobalData.Enums.BalanceTypes));
-            var types = typeStrings.Select(ts => new BalanceType { Name = ts, Id = Guid.NewGuid() }).ToArray();
-            builder.Entity<BalanceType>().HasData(types);
-
             base.OnModelCreating(builder);
         }
-
     }
 }
