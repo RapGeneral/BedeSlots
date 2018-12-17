@@ -6,6 +6,7 @@ using BedeSlots.GlobalData.MappingProvider;
 using BedeSlots.GlobalData.Providers;
 using BedeSlots.Services;
 using BedeSlots.Services.Contracts;
+using BedeSlots.Services.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

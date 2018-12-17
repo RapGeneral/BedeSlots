@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BedeSlots.Services.Utilities;
 
 namespace BedeSlots.Services
 {
@@ -16,17 +17,19 @@ namespace BedeSlots.Services
         private readonly IRepository<UserBankDetails> userBankDetailsRepo;
         private readonly IRepository<BankDetails> bankDetailsRepo;
         private readonly IMappingProvider mappingProvider;
+        private readonly IDateTimeWrapper dateTime;
 
-        public BankDetailsServices(IRepository<BankDetails> bankDetailsRepo, IMappingProvider mappingProvider, IRepository<UserBankDetails> userBankDetailsRepo)
+        public BankDetailsServices(IRepository<BankDetails> bankDetailsRepo, IMappingProvider mappingProvider, IDateTimeWrapper dateTime, IRepository<UserBankDetails> userBankDetailsRepo)
         {
             this.userBankDetailsRepo = userBankDetailsRepo;
             this.bankDetailsRepo = bankDetailsRepo;
             this.mappingProvider = mappingProvider;
+            this.dateTime = dateTime;
         }
 
         public async Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate, string userId)
         {
-            int dateResult = DateTime.Compare(expiryDate, DateTime.Now);
+            int dateResult = DateTime.Compare(expiryDate, dateTime.Now);
 
             if (dateResult < 0)
             {
