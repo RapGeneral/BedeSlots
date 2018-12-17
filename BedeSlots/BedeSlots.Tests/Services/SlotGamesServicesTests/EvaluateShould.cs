@@ -2,8 +2,10 @@
 using BedeSlots.ViewModels.Enums;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace BedeSlots.Tests.Services.SlotGamesServicesTests
 {
@@ -33,32 +35,37 @@ namespace BedeSlots.Tests.Services.SlotGamesServicesTests
             Assert.ThrowsException<ArgumentException>(() => sut.Evaluate(matrix));
         }
         //Basically data rows with arrays.
+        private static Dictionary<string, decimal> GetCoeffs()
+        {
+            var coeffsAsJson = File.ReadAllText(@"..\..\..\..\BedeSlots.Services\GameCoefficients.json");
+            return JsonConvert.DeserializeObject<Dictionary<string, decimal>>(coeffsAsJson);
+        }
         private static IEnumerable<object[]> FirstSlotMatrix =>
             new List<object[]> {
                 new object[] {new List<List<GameItemChanceOutOf100>> {
                     new List<GameItemChanceOutOf100>{ GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple},
                     new List<GameItemChanceOutOf100>{ GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.Pen},
                     new List<GameItemChanceOutOf100>{GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.PPAP } },
-                    (3*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.Apple.ToString()))/10.0M//Coeff actual value
+                    3 * GetCoeffs()[GameItemChanceOutOf100.Apple.ToString()]//Coeff actual value
                 },
                 new object[] {new List<List<GameItemChanceOutOf100>> {
                     new List<GameItemChanceOutOf100>{ GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple},
                     new List<GameItemChanceOutOf100>{ GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.Pen},
                     new List<GameItemChanceOutOf100>{GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.PPAP } },
-                    (2*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.Apple.ToString()))/10.0M//Coeff actual value
+                    2 * GetCoeffs()[GameItemChanceOutOf100.Apple.ToString()]//Coeff actual value
                 },
                 new object[] {new List<List<GameItemChanceOutOf100>>  {
                     new List<GameItemChanceOutOf100> { GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple},
                     new List<GameItemChanceOutOf100> { GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.PPAP},
                     new List<GameItemChanceOutOf100> {GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.PPAP } },
-                    (5*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.Apple.ToString())+
-                    (int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.PPAP.ToString()))/10.0M//coeff actual value
+                    5 * GetCoeffs()[GameItemChanceOutOf100.Apple.ToString()]+//Coeff actual value+
+                    GetCoeffs()[GameItemChanceOutOf100.PPAP.ToString()]//coeff actual value
                 },
                 new object[] {new List<List<GameItemChanceOutOf100>>  {
                     new List<GameItemChanceOutOf100> { GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.PPAP},
                     new List<GameItemChanceOutOf100> { GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.PPAP},
                     new List<GameItemChanceOutOf100> {GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.PPAP } },
-                    (6*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.PPAP.ToString()))/10.0M//coeff actual value
+                    6 * GetCoeffs()[GameItemChanceOutOf100.PPAP.ToString()]
                 }
             };
         [TestMethod]
