@@ -1,6 +1,8 @@
 ﻿using BedeSlots.DataModels;
 using BedeSlots.ViewModels.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 
 namespace BedeSlots.ViewModels.GlobalViewModels
 {

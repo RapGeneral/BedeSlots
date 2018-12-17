@@ -1,5 +1,3 @@
-using System;
-
 namespace BedeSlots.Models
 {
     public class ErrorViewModel

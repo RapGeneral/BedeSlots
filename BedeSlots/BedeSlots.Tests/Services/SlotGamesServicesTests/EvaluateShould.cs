@@ -39,31 +39,31 @@ namespace BedeSlots.Tests.Services.SlotGamesServicesTests
                     new List<GameItemChanceOutOf100>{ GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple},
                     new List<GameItemChanceOutOf100>{ GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.Pen},
                     new List<GameItemChanceOutOf100>{GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.PPAP } },
-                    (3*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.Apple.ToString()))/10.0//Coeff actual value
+                    (3*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.Apple.ToString()))/10.0M//Coeff actual value
                 },
                 new object[] {new List<List<GameItemChanceOutOf100>> {
                     new List<GameItemChanceOutOf100>{ GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple},
                     new List<GameItemChanceOutOf100>{ GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.Pen},
                     new List<GameItemChanceOutOf100>{GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.PPAP } },
-                    (2*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.Apple.ToString()))/10.0//Coeff actual value
+                    (2*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.Apple.ToString()))/10.0M//Coeff actual value
                 },
                 new object[] {new List<List<GameItemChanceOutOf100>>  {
                     new List<GameItemChanceOutOf100> { GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple},
                     new List<GameItemChanceOutOf100> { GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.PPAP},
                     new List<GameItemChanceOutOf100> {GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.PPAP } },
                     (5*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.Apple.ToString())+
-                    (int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.PPAP.ToString()))/10.0//coeff actual value
+                    (int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.PPAP.ToString()))/10.0M//coeff actual value
                 },
                 new object[] {new List<List<GameItemChanceOutOf100>>  {
                     new List<GameItemChanceOutOf100> { GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.PPAP},
                     new List<GameItemChanceOutOf100> { GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.PPAP, GameItemChanceOutOf100.PPAP},
                     new List<GameItemChanceOutOf100> {GameItemChanceOutOf100.Apple, GameItemChanceOutOf100.Pineapple, GameItemChanceOutOf100.PPAP } },
-                    (6*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.PPAP.ToString()))/10.0//coeff actual value
+                    (6*(int)Enum.Parse(typeof(GameItemCoeffsOutOf10), GameItemChanceOutOf100.PPAP.ToString()))/10.0M//coeff actual value
                 }
             };
         [TestMethod]
         [DynamicData(nameof(FirstSlotMatrix))]
-        public void CorrectlyCalculateCoefficients(List<List<GameItemChanceOutOf100>>slotMatrix, double actualCoeff)
+        public void CorrectlyCalculateCoefficients(List<List<GameItemChanceOutOf100>>slotMatrix, decimal actualCoeff)
         {
             //Arrange
             var memoryCache = new MemoryCache(new MemoryCacheOptions());

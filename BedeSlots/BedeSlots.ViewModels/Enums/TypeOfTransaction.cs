@@ -1,5 +1,4 @@
-﻿
-namespace BedeSlots.ViewModels.Enums
+﻿namespace BedeSlots.ViewModels.Enums
 {
     public enum TypeOfTransaction
     {

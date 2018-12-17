@@ -2,7 +2,7 @@
 using BedeSlots.DataModels;
 using BedeSlots.ViewModels.GlobalViewModels;
 
-namespace BedeSlots.Infrastructure.MappingProvider.Mappings
+namespace BedeSlots.ViewModels.MappingProvider.Mappings
 {
     public class BalanceToMoneyViewModel : Profile
     {

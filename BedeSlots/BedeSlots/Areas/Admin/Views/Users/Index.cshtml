@@ -15,8 +15,9 @@
     <div id="username-input" class="col-md-4">
         <input class="form-control" placeholder="UserName" />
     </div>
-    <button id="username-filter" class="btn btn-success">Filter</button>
+    <button id="username-filter" class="btn btn-success col-lg-1">Filter</button>
 </div>
+<div class="row"></div>
 <div id="table-content">
     <partial name="_UserGrid" model="Model" />
 </div>
@@ -89,9 +90,22 @@
 
         $("button#unlock-user").click(function () {
             const url = window.location.href.toLowerCase().replace(`@nameof(UsersController.Index).ToLower()`, `@nameof(UsersController.UnlockUser).ToLower()`);
-            debugger;
-			$.ajax({
-				url: url,
+            sendSimpleAjax(url);
+        });
+
+        $("button#promote-user").click(function () {
+            const url = window.location.href.toLowerCase().replace(`@nameof(UsersController.Index).ToLower()`, `@nameof(UsersController.PromoteUser).ToLower()`);
+            sendSimpleAjax(url);
+        });
+
+        $("button#demote-user").click(function () {
+            const url = window.location.href.toLowerCase().replace(`@nameof(UsersController.Index).ToLower()`, `@nameof(UsersController.DemoteUser).ToLower()`);
+            sendSimpleAjax(url);
+        });
+
+        function sendSimpleAjax(url) {
+            $.ajax({
+                url: url,
                 type: 'POST',
                 cache: false,
                 data: jQuery.param({
@@ -100,10 +114,10 @@
                 }),
                 success: function (result) {
                     $('#user-modal').modal('hide');
-					$('#status-message').html(result);
-				}
-			});
-        });
+                    $('#status-message').html(result);
+                }
+            });
+        }
 
         function getToken()
         {

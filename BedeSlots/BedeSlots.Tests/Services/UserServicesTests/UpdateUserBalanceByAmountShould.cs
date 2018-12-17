@@ -1,6 +1,6 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
+using BedeSlots.ViewModels.MappingProvider;
 using BedeSlots.Services;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BedeSlots.ViewModels.Enums;
 
 namespace BedeSlots.Tests.Services.UserServicesTests
 {
@@ -49,10 +50,10 @@ namespace BedeSlots.Tests.Services.UserServicesTests
                                         .Object);
 
             
-            var balance1 = new Balance { Currency = currency1, UserId = userId1, Money = balance1OpeningMoney }; //Thats USD
-            var balance12 = new Balance { Currency = currency2, UserId = userId1, Money = balance12OpeningMoney };//Thats EUR
-            var balance2 = new Balance { Currency = currency1, UserId = userId2 };
-            var balance22 = new Balance { Currency = currency3, UserId = userId2};
+            var balance1 = new Balance { Currency = currency1, UserId = userId1, Money = balance1OpeningMoney, Type = new BalanceType { Name = BalanceTypes.Base.ToString() } }; //Thats USD
+            var balance12 = new Balance { Currency = currency2, UserId = userId1, Money = balance12OpeningMoney, Type = new BalanceType { Name = BalanceTypes.Personal.ToString() } };//Thats EUR
+            var balance2 = new Balance { Currency = currency1, UserId = userId2, Type = new BalanceType { Name = BalanceTypes.Base.ToString() } }; 
+            var balance22 = new Balance { Currency = currency3, UserId = userId2, Type = new BalanceType { Name = BalanceTypes.Personal.ToString() } };
             var balanceRepoMock = new Mock<IRepository<Balance>>();
             balanceRepoMock
                 .Setup(brm => brm.All())
@@ -113,8 +114,8 @@ namespace BedeSlots.Tests.Services.UserServicesTests
 
             var currency1 = new Currency { CurrencyName = "USD" };
             var currency2 = new Currency { CurrencyName = null };
-            var balance1 = new Balance { Currency = currency1, UserId = userId };
-            var balance2 = new Balance { Currency = currency2, UserId = userId };
+            var balance1 = new Balance { Currency = currency1, UserId = userId, Type = new BalanceType {Name = BalanceTypes.Base.ToString() } };
+            var balance2 = new Balance { Currency = currency2, UserId = userId, Type = new BalanceType { Name = BalanceTypes.Personal.ToString() } };
             var balanceRepoMock = new Mock<IRepository<Balance>>();
             balanceRepoMock
                 .Setup(brm => brm.All())

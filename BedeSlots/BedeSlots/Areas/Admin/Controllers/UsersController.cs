@@ -1,11 +1,12 @@
 ﻿using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.Providers;
+using BedeSlots.ViewModels.Providers;
 using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
+using Microsoft.AspNetCore.Identity;
 
 namespace BedeSlots.Areas.Admin.Controllers
 {
@@ -16,7 +17,7 @@ namespace BedeSlots.Areas.Admin.Controllers
 	{
         private readonly IUserServices userServices;
         private readonly IUserManager<User> userManager;
-		private readonly int PAGE_SIZE = 1;
+        private readonly int PAGE_SIZE = 15;
 
 		public UsersController(IUserManager<User> userManager, IUserServices userServices)
 		{
@@ -88,5 +89,41 @@ namespace BedeSlots.Areas.Admin.Controllers
 			}
             return this.PartialView("_StatusMessage", "The user has been successfully unlocked!");
 		}
-	}
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PromoteUser(string userId)
+        {
+            var user = userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
+            if (user is null)
+            {
+                return this.PartialView("_StatusMessage", "Error: User not found!");
+            }
+
+            var result = await userManager.AddToRoleAsync(user, "Administrator");
+            if (!result.Succeeded)
+            {
+                return this.PartialView("_StatusMessage", "Error: Could not promote user!");
+            }
+            return this.PartialView("_StatusMessage", "The user has been successfully promoted!");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DemoteUser(string userId)
+        {
+            var user = userManager.Users.Where(u => u.Id == userId).FirstOrDefault();
+            if (user is null)
+            {
+                return this.PartialView("_StatusMessage", "Error: User not found!");
+            }
+
+            var result = await userManager.RemoveFromRoleAsync(user, "Administrator");
+            if (!result.Succeeded)
+            {
+                return this.PartialView("_StatusMessage", "Error: Could not demote user!");
+            }
+            return this.PartialView("_StatusMessage", "The user has been successfully demoted!");
+        }
+    }
 }

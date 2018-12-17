@@ -4,14 +4,16 @@ using BedeSlots.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BedeSlots.DataContext.Migrations
 {
     [DbContext(typeof(BedeDBContext))]
-    partial class BedeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181216143801_BalanceType")]
+    partial class BalanceType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,12 +55,6 @@ namespace BedeSlots.DataContext.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BalanceTypes");
-
-                    b.HasData(
-                        new { Id = new Guid("ebbe0c6a-5fe2-4a5f-972c-bd1fe7c83a46"), Name = "Personal" },
-                        new { Id = new Guid("706fbf4e-0b30-4d90-b542-b0c192e3d547"), Name = "Base" },
-                        new { Id = new Guid("8426f5d3-038f-4cb0-9df0-c43d3644d71d"), Name = "Bonus" }
-                    );
                 });
 
             modelBuilder.Entity("BedeSlots.DataModels.BankDetails", b =>
