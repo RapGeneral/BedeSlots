@@ -1,4 +1,4 @@
-﻿using BedeSlots.ViewModels.Enums;
+﻿using BedeSlots.GlobalData.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

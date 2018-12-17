@@ -1,6 +1,6 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.ViewModels.MappingProvider;
+using BedeSlots.GlobalData.MappingProvider;
 using BedeSlots.Services;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
 
 namespace BedeSlots.Tests.Services.UserServicesTests
 {

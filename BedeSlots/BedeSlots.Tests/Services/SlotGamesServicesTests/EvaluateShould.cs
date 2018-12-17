@@ -1,5 +1,5 @@
 ﻿using BedeSlots.Services;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;

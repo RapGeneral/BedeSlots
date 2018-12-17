@@ -1,8 +1,8 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.GlobalViewModels;
-using BedeSlots.ViewModels.MappingProvider;
+using BedeSlots.GlobalData.GlobalViewModels;
+using BedeSlots.GlobalData.MappingProvider;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

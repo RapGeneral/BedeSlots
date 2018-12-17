@@ -1,5 +1,5 @@
 ﻿using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;

@@ -1,6 +1,4 @@
-﻿@using BedeSlots.ViewComponents;
-
-@if (User.Identity.IsAuthenticated)
+﻿@if (User.Identity.IsAuthenticated)
 {
     <form asp-area="Identity" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">

@@ -1,5 +1,5 @@
-﻿using BedeSlots.ViewModels.Enums;
-using BedeSlots.ViewModels.GlobalViewModels;
+﻿using BedeSlots.GlobalData.Enums;
+using BedeSlots.GlobalData.GlobalViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

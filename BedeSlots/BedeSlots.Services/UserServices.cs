@@ -1,15 +1,15 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.ViewModels.MappingProvider;
+using BedeSlots.GlobalData.MappingProvider;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.GlobalViewModels;
+using BedeSlots.GlobalData.GlobalViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
 
 namespace BedeSlots.Services
 {

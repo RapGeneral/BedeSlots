@@ -1,4 +1,4 @@
-﻿using BedeSlots.ViewModels.GlobalViewModels;
+﻿using BedeSlots.GlobalData.GlobalViewModels;
 using System.Threading.Tasks;
 
 namespace BedeSlots.Services.Contracts

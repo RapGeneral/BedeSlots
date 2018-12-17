@@ -1,4 +1,4 @@
-﻿namespace BedeSlots.ViewModels.GlobalViewModels
+﻿namespace BedeSlots.GlobalData.GlobalViewModels
 {
     public class MoneyViewModel
     {

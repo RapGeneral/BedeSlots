@@ -1,8 +1,8 @@
 ﻿using BedeSlots.Areas.Identity.Models.ManageViewModels;
 using BedeSlots.DataModels;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.Enums;
-using BedeSlots.ViewModels.GlobalViewModels;
+using BedeSlots.GlobalData.Enums;
+using BedeSlots.GlobalData.GlobalViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

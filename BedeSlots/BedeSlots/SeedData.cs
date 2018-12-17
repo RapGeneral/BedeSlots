@@ -1,7 +1,7 @@
 ﻿using BedeSlots.DataContext;
 using BedeSlots.DataModels;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

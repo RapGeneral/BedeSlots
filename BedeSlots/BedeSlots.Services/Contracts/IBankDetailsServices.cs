@@ -1,4 +1,4 @@
-﻿using BedeSlots.ViewModels.GlobalViewModels;
+﻿using BedeSlots.GlobalData.GlobalViewModels;
 using System;
 using System.Threading.Tasks;
 

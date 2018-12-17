@@ -1,8 +1,8 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
 using BedeSlots.Services;
-using BedeSlots.ViewModels.Enums;
-using BedeSlots.ViewModels.MappingProvider;
+using BedeSlots.GlobalData.Enums;
+using BedeSlots.GlobalData.MappingProvider;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;

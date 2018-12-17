@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using BedeSlots.DataModels;
-using BedeSlots.ViewModels.GlobalViewModels;
+using BedeSlots.GlobalData.GlobalViewModels;
 using System;
 
-namespace BedeSlots.ViewModels.MappingProvider.Mappings
+namespace BedeSlots.GlobalData.MappingProvider.Mappings
 {
     public class BankDetailsToBankDetailsViewModel : Profile
     {
