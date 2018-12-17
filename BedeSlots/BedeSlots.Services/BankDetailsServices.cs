@@ -29,7 +29,7 @@ namespace BedeSlots.Services
 
         public async Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate, string userId)
         {
-            int dateResult = DateTime.Compare(expiryDate, dateTime.Now);
+            int dateResult = DateTime.Compare(expiryDate, dateTime.Now());
 
             if (dateResult < 0)
             {
