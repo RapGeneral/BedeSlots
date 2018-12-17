@@ -1,9 +1,9 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
+using BedeSlots.GlobalData.GlobalViewModels;
+using BedeSlots.GlobalData.MappingProvider;
 using BedeSlots.Services;
 using BedeSlots.Services.Utilities;
-using BedeSlots.ViewModels.GlobalViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
 using Moq;
@@ -34,10 +34,11 @@ namespace BedeSlots.Tests.Services.BankDetailsServicesTests
 
             var mappingProviderMock = new Mock<IMappingProvider>();
             var dateTimeWrapperMock = new Mock<IDateTimeWrapper>();
+            var userBankDetailsRepoMock = new Mock<IRepository<UserBankDetails>>();
 
-            var sut = new BankDetailsServices(bankDetailsRepoMock.Object, mappingProviderMock.Object, dateTimeWrapperMock.Object);            
+            var sut = new BankDetailsServices(bankDetailsRepoMock.Object, mappingProviderMock.Object, dateTimeWrapperMock.Object, userBankDetailsRepoMock.Object);            
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.AddBankDetailsAsync(number, cvv, DateTime.Now, userid));
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => sut.AddBankDetailsAsync(number, cvv, DateTime.Now, userid));
         }
 
         [TestMethod]
@@ -63,13 +64,14 @@ namespace BedeSlots.Tests.Services.BankDetailsServicesTests
                 .Setup(mpm => mpm.MapTo<BankDetailsViewModel>(It.IsAny<BankDetails>()))
                 .Callback<object>(inputArg => mapInput = inputArg as BankDetails);
 
-            var sut = new BankDetailsServices(bankDetailsRepoMock.Object, mappingProviderMock.Object, dateTimeWrapperMock.Object);
+            var userBankDetailsRepoMock = new Mock<IRepository<UserBankDetails>>();
+
+            var sut = new BankDetailsServices(bankDetailsRepoMock.Object, mappingProviderMock.Object, dateTimeWrapperMock.Object, userBankDetailsRepoMock.Object);
 
             var result = await sut.AddBankDetailsAsync(number, cvv, expiryDate, userid);
 
             Assert.IsTrue(mapInput.Cvv == cvv);
             Assert.IsTrue(mapInput.Number == number);
-
         }
     }
 }
