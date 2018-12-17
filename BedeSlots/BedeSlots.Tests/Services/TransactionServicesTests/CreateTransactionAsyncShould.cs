@@ -1,9 +1,9 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Services;
 using BedeSlots.ViewModels.Enums;
 using BedeSlots.ViewModels.GlobalViewModels;
+using BedeSlots.ViewModels.MappingProvider;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
 using Moq;
@@ -25,8 +25,8 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
             const string description = "mn pari";
             const decimal amount = 1232;
 
-            var balance1 = new Balance { Currency = new Currency { CurrencyName = "USD" }, User = new User { Id = "pesho" } };
-            var balance2 = new Balance { Currency = new Currency { CurrencyName = "EUR" }, User = new User { Id = "pesho" } };
+            var balance1 = new Balance { Type = new BalanceType { Name = BalanceTypes.Base.ToString() } };
+            var balance2 = new Balance { Type = new BalanceType { Name = BalanceTypes.Personal.ToString() } };
             var balanceList = new List<Balance> { balance1, balance2 };
 
             var balanceRepoMock = new Mock<IRepository<Balance>>();

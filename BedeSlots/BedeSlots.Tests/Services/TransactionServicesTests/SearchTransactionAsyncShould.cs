@@ -1,15 +1,13 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Services;
 using BedeSlots.ViewModels.GlobalViewModels;
+using BedeSlots.ViewModels.MappingProvider;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BedeSlots.Tests.Services.TransactionServicesTests
@@ -47,7 +45,7 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
 
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(null, null, null, types);
+            var result = await sut.SearchTransactionAsync(null, null, null, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
@@ -88,7 +86,7 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
 
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(searchUsername, null, null, types);
+            var result = await sut.SearchTransactionAsync(searchUsername, null, null, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
@@ -124,7 +122,7 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
 
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(null, null, null, types);
+            var result = await sut.SearchTransactionAsync(null, null, null, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
@@ -162,7 +160,7 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
 
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(null, null, maxSearch, types);
+            var result = await sut.SearchTransactionAsync(null, null, maxSearch, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
@@ -202,7 +200,7 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
 
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(null, minSearch, null, types);
+            var result = await sut.SearchTransactionAsync(null, minSearch, null, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
@@ -237,7 +235,7 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
             
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(null, minSearch, maxSearch, types);
+            var result = await sut.SearchTransactionAsync(null, minSearch, maxSearch, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             
@@ -276,7 +274,7 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
 
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(null, minSearch, maxSearch, types);
+            var result = await sut.SearchTransactionAsync(null, minSearch, maxSearch, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
@@ -291,8 +289,9 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
             var transactionTypeRepoMock = new Mock<IRepository<TransactionType>>();
 
             const string type1 = "deposit";
+            const string type2 = "peshkonti";
 
-            List<string> types = new List<string> { type1 };            
+            List<string> types = new List<string> { type1, type2 };            
 
             var transaction1 = new Transaction { Type = new TransactionType { Name = "deposit" } };
             var transaction2 = new Transaction { Type = new TransactionType { Name = "stake" } };
@@ -315,7 +314,7 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
 
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(null, null, null, types);
+            var result = await sut.SearchTransactionAsync(null, null, null, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
@@ -351,11 +350,11 @@ namespace BedeSlots.Tests.Services.TransactionServicesTests
 
             var sut = new TransactionServices(balanceRepoMock.Object, transactionRepoMock.Object, transactionTypeRepoMock.Object, mappingProviderMock.Object);
             //Act
-            var result = await sut.SearchTransactionAsync(null, null, null, types);
+            var result = await sut.SearchTransactionAsync(null, null, null, types, null, false);
             //Assert
             transactionRepoMock.Verify(urm => urm.All(), Times.Once);
             mappingProviderMock.Verify(mpp => mpp.MapTo<ICollection<TransactionViewModel>>(It.IsAny<List<Transaction>>()), Times.Once);
             Assert.IsTrue(mapInput.Count == 3);
-        }
+        }       
     }
 }

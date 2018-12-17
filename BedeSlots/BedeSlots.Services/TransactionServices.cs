@@ -39,7 +39,7 @@ namespace BedeSlots.Services
             {
                 throw new ArgumentNullException("Balance can`t be null");
             }
-
+            
             var transactionType = await transactionTypeRepo.All()
                 .Where(t => t.Name.ToLower() == type.ToString().ToLower())
                 .FirstOrDefaultAsync();
@@ -94,9 +94,8 @@ namespace BedeSlots.Services
                     return new List<TransactionViewModel>();
                 }
                 transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
-            }
 
-
+            } 
             if (!(types is null) && types.Count != 0)
             {
                 transactions = transactions.Where(tr => types.Any(type => tr.Type.Name.ToLower() == type.ToLower()));
@@ -132,10 +131,10 @@ namespace BedeSlots.Services
 
             return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundTrnasaciton);
         }
-
         public async Task<ICollection<string>> GetTypesAsync()
         {
             return await transactionTypeRepo.All().Select(trt => trt.Name).ToListAsync();
         }
     }
 }
+
