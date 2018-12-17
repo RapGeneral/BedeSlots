@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BedeSlots.ViewModels.GlobalViewModels
+namespace BedeSlots.GlobalData.GlobalViewModels
 {
     public class BankDetailsViewModel
     {
+        public string Id { get; set; }
         [Required]
         [CreditCard]
         public string Number { get; set; }

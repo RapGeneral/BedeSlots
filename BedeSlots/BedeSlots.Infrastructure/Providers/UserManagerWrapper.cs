@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace BedeSlots.ViewModels.Providers
+namespace BedeSlots.GlobalData.Providers
 {
 
     public class UserManagerWrapper<T> : IUserManager<T> where T : class

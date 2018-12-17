@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace BedeSlots.ViewModels.Providers
+namespace BedeSlots.GlobalData.Providers
 {
     public interface IUserManager<T> where T : class
     {

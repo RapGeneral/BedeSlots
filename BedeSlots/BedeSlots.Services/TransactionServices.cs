@@ -1,9 +1,9 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels.Enums;
-using BedeSlots.ViewModels.GlobalViewModels;
-using BedeSlots.ViewModels.MappingProvider;
+using BedeSlots.GlobalData.Enums;
+using BedeSlots.GlobalData.GlobalViewModels;
+using BedeSlots.GlobalData.MappingProvider;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -81,11 +81,11 @@ namespace BedeSlots.Services
 
             if (min == null && max != null)
             {
-                transactions = transactions.Where(tr => Math.Abs(tr.Amount) < max);
+                transactions = transactions.Where(tr => Math.Abs(tr.Amount) < (decimal)max);
             }
             if (max == null && min != null)
             {
-                transactions = transactions.Where(tr => Math.Abs(tr.Amount) > min);
+                transactions = transactions.Where(tr => Math.Abs(tr.Amount) > (decimal)min);
             }
             if (min != null && max != null)
             {
