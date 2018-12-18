@@ -71,15 +71,8 @@ namespace BedeSlots.Controllers
             var earnings = model.Stake * coef;
             if (coef != 0)
             {
-                decimal usdChangeOfEarnings;
-                lock (userServices)
-                {
-                    usdChangeOfEarnings = userServices.UpdateUserBalanceByAmount(earnings, userId).Result;
-                }
-                lock (transactionServices)
-                {
-                    transactionServices.CreateTransactionAsync(TypeOfTransaction.Win, "Win", usdChangeOfEarnings, userId);
-                }
+                var usdChangeOfEarnings = await userServices.UpdateUserBalanceByAmount(earnings, userId);
+                await transactionServices.CreateTransactionAsync(TypeOfTransaction.Win, "Win", usdChangeOfEarnings, userId);
             }
             //serialize matrix to json
             string result = jsonConverter.SerializeObject(gameMatrix, new JsonSerializerSettings
