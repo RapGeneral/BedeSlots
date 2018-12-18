@@ -15,8 +15,6 @@ namespace BedeSlots.DataModels
 
         public ICollection<Balance> Balances { get; set; }
         
-        public Currency Currency { get; set; }
-
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }

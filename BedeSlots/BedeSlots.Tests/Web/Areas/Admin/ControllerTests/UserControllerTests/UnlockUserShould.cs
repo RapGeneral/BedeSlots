@@ -1,6 +1,6 @@
 ﻿using BedeSlots.Areas.Admin.Controllers;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 using BedeSlots.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

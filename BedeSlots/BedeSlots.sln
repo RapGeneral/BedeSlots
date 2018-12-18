@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.DataContext", "Be
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.Services", "BedeSlots.Services\BedeSlots.Services.csproj", "{40E66EE5-1234-40CE-8499-9C9495D4BB7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.ViewModels", "BedeSlots.ViewModels\BedeSlots.ViewModels.csproj", "{F64155C8-FC5B-4843-9885-B059E2F5AC75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.GlobalData", "BedeSlots.ViewModels\BedeSlots.GlobalData.csproj", "{F64155C8-FC5B-4843-9885-B059E2F5AC75}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BedeSlots.Infrastructure", "BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj", "{FE1B1F8F-FC33-4746-AF50-5E48D2AFB4C5}"
 EndProject

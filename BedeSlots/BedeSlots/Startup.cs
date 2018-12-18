@@ -2,10 +2,10 @@
 using BedeSlots.DataContext;
 using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
-using BedeSlots.Infrastructure.Providers;
+using BedeSlots.GlobalData.MappingProvider;
 using BedeSlots.Services;
 using BedeSlots.Services.Contracts;
+using BedeSlots.Services.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using BedeSlots.Utilities.Extentions;
+using BedeSlots.Infrastructure.Providers;
+using BedeSlots.Infrastructure.Providers.Interfaces;
 
 namespace BedeSlots
 {
@@ -47,12 +50,21 @@ namespace BedeSlots
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
+            services.AddScoped(typeof(ISignInManager<>), typeof(SignInManagerWrapper<>));
+            services.AddSingleton<IFileReader,FileReader>();
+            services.AddSingleton<IJsonConverter, JsonConvertor>();
             services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<ITransactionServices, TransactionServices>();
             services.AddScoped<IMappingProvider, MappingProvider>();
+            services.AddScoped<ICurrencyServices, CurrencyServices>();
+            services.AddScoped<IBankDetailsServices, BankDetailsServices>();
+            services.AddScoped<ISlotGamesServices, SlotGamesServices>();
+            services.AddScoped<IUserBankDetailsServices, UserBankDetailsServices>();
+            services.AddScoped<IDateTimeWrapper, DateTimeWrapper>();
 
             services.AddMemoryCache();
             services.AddAutoMapper();
-
+        
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -66,7 +78,7 @@ namespace BedeSlots
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error/Index");
                 app.UseHsts();
             }
 
@@ -75,6 +87,8 @@ namespace BedeSlots
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            app.UseNotFoundExceptionHandler();
 
             app.UseMvc(routes =>
             {

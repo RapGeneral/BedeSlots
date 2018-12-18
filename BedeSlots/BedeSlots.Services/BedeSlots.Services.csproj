@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BedeSlots.DataContext\BedeSlots.DataContext.csproj" />
     <ProjectReference Include="..\BedeSlots.Infrastructure\BedeSlots.Infrastructure.csproj" />
-    <ProjectReference Include="..\BedeSlots.ViewModels\BedeSlots.ViewModels.csproj" />
+    <ProjectReference Include="..\BedeSlots.ViewModels\BedeSlots.GlobalData.csproj" />
   </ItemGroup>
 
 </Project>

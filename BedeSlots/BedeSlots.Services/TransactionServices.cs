@@ -1,9 +1,9 @@
 ﻿using BedeSlots.DataContext.Repository;
 using BedeSlots.DataModels;
-using BedeSlots.Infrastructure.MappingProvider;
 using BedeSlots.Services.Contracts;
-using BedeSlots.ViewModels;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
+using BedeSlots.GlobalData.GlobalViewModels;
+using BedeSlots.GlobalData.MappingProvider;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,16 +29,25 @@ namespace BedeSlots.Services
 
         public async Task<TransactionViewModel> CreateTransactionAsync(TypeOfTransaction type, string description, decimal amount, string userId)
         {
-            //fix the magic string when we have base update
             var balance = await balanceRepo.All()
                 .Include(b => b.User)
-                .Include(b => b.Currency)
-                .Where(b => b.UserId == userId && b.Currency.CurrencyName != "USD")
+                .Include(b => b.Type)
+                .Where(b => b.UserId == userId && b.Type.Name == BalanceTypes.Base.ToString())
                 .FirstOrDefaultAsync();
 
+            if (balance is null)
+            {
+                throw new ArgumentNullException("Balance can`t be null");
+            }
+            
             var transactionType = await transactionTypeRepo.All()
                 .Where(t => t.Name.ToLower() == type.ToString().ToLower())
                 .FirstOrDefaultAsync();
+
+            if (transactionType is null)
+            {
+                throw new ArgumentNullException("Transaction type can`t be null");
+            }
 
             var transaction = new Transaction
             {
@@ -47,45 +56,85 @@ namespace BedeSlots.Services
                 Date = DateTime.Now,
                 Description = description,
                 Amount = amount,
-                OpeningBalance = balance.Money
+                OpeningBalance = balance.Money - amount
             };
 
             transactionRepo.Add(transaction);
             await transactionRepo.SaveAsync();
-
+            
             var model = mappingProvider.MapTo<TransactionViewModel>(transaction);
 
             return model;
         }
 
-        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int min, int max, ICollection<string> types)
+        public async Task<ICollection<TransactionViewModel>> SearchTransactionAsync(string username, int? min, int? max, ICollection<string> types, string sortProp, bool descending = false)
         {
             IQueryable<Transaction> transactions = transactionRepo.All()
-                .Include(tr => tr.Amount)
                 .Include(tr => tr.Balance)
                     .ThenInclude(b => b.User)
-                .Include(tr => tr.Type)
-                    .ThenInclude(ty => ty.Name);
+                .Include(tr => tr.Type);
 
             if (username != null)
             {
                 transactions = transactions.Where(tr => tr.Balance.User.UserName.ToLower().Contains(username.ToLower()));
             }
 
-            if (max < min)
+            if (min == null && max != null)
             {
-                throw new ArgumentOutOfRangeException("Max value must be greater than 0");
+                transactions = transactions.Where(tr => Math.Abs(tr.Amount) < (decimal)max);
             }
-            transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
+            if (max == null && min != null)
+            {
+                transactions = transactions.Where(tr => Math.Abs(tr.Amount) > (decimal)min);
+            }
+            if (min != null && max != null)
+            {
+                if (max < min)
+                {
+                    return new List<TransactionViewModel>();
+                }
+                transactions = transactions.Where(tr => tr.Amount > min && tr.Amount < max);
 
-            if (types.Count == 0)
+            } 
+            if (!(types is null) && types.Count != 0)
             {
                 transactions = transactions.Where(tr => types.Any(type => tr.Type.Name.ToLower() == type.ToLower()));
             }
 
-            var foundedTrnasaciton = await transactions.ToListAsync();
+            if (!(sortProp is null))
+            {
+                if (descending)
+                {
+                    if (sortProp == "Username")
+                    {
+                        transactions = transactions.OrderByDescending(tr => tr.Balance.User);
+                    }
+                    else
+                    {
+                        transactions = transactions.OrderByDescending(tr => tr.GetType().GetProperty(sortProp).GetValue(tr, null));
+                    }
+                }
+                else
+                {
+                    if (sortProp == "Username")
+                    {
+                        transactions = transactions.OrderByDescending(tr => tr.Balance.User);
+                    }
+                    else
+                    {
+                        transactions = transactions.OrderBy(tr => tr.GetType().GetProperty(sortProp).GetValue(tr, null));
+                    }
+                }
+            }
 
-            return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundedTrnasaciton);
+            var foundTrnasaciton = await transactions.ToListAsync();
+
+            return mappingProvider.MapTo<ICollection<TransactionViewModel>>(foundTrnasaciton);
+        }
+        public async Task<ICollection<string>> GetTypesAsync()
+        {
+            return await transactionTypeRepo.All().Select(trt => trt.Name).ToListAsync();
         }
     }
 }
+

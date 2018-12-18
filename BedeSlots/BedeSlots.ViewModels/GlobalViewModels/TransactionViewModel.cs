@@ -1,19 +1,13 @@
 ﻿using BedeSlots.DataModels;
-using BedeSlots.ViewModels.Enums;
+using BedeSlots.GlobalData.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 
-namespace BedeSlots.ViewModels
+namespace BedeSlots.GlobalData.GlobalViewModels
 {
     public class TransactionViewModel
-    {
-        public TransactionViewModel(Transaction transaction)
-        {
-            Date = transaction.Date;
-            Type = Enum.Parse<TypeOfTransaction>(transaction.Type.Name, true);
-            Amount = transaction.Amount;
-            Description = transaction.Description;
-            Username = transaction.Balance.User.UserName;
-        }
+    {    
         public DateTime Date { get; set; }
 
         public TypeOfTransaction Type { get; set; }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BedeSlots.ViewModels.Enums
+﻿namespace BedeSlots.GlobalData.Enums
 {
     public enum BalanceTypes
     {

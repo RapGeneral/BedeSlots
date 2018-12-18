@@ -1,0 +1,92 @@
+﻿@model SlotGameViewModel
+@{
+    ViewData["Title"] = "SlotGame";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/ezslots.css" rel="stylesheet" type="text/css" />
+
+<div id="status-message"></div>
+
+<br />
+
+<div id="content" class="">
+    @{const string SLOT_DIV_CONTAINER_NAME = "slotz"; }
+
+    @for (int i = 0; i < Model.N; i++)
+    {
+        <div class="row" id="@(SLOT_DIV_CONTAINER_NAME + i)"></div>
+    }
+    <form id="stake-form" method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <input asp-for="Stake" class="form-control" value="" placeholder="Stake" />
+            <span asp-validation-for="Stake" class="text-danger"></span>
+        </div>
+        <input asp-for="M" value="@Model.M" type="hidden" />
+        <input asp-for="N" value="@Model.N" type="hidden" />
+        <div class="form-group">
+            <button id="play-game" type="submit" class="btn btn-default center-block">Spin</button>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script src="~/lib/jquery-easing/jquery.easing.1.3.js"></script>
+    <script src="~/lib/ezslots/ezslots.js"></script>
+    <script>
+        $(function () {
+            //Upon loading the page
+            const images = [];
+            const imageNames = [];
+            @foreach(var item in Enum.GetValues(typeof (GameItemChanceOutOf100)))
+            {
+                @:images.push(`<img src="/images/@(item.ToString()).jpg" width="126" height="126">`);
+                @:imageNames.push("@item.ToString().ToLower()");
+            }
+
+            var callbackFunction = function (result) {
+                $.ajax(url = 'Money').done(function (data) { $('#money').html(data) }) 
+            }
+
+            let ezslots = [];
+            let emptyRow = new Array(@Model.M).fill(0);
+            for (let i = 0; i < @Model.N - 1; i++) {
+                ezslots[i] = new EZSlots(`@SLOT_DIV_CONTAINER_NAME${i}`, { "reelCount": @Model.M, "winningSet": emptyRow, "symbols": images, "height": 126, "width": 126 });
+            }
+            ezslots[@Model.N - 1] = new EZSlots(`@SLOT_DIV_CONTAINER_NAME${@Model.N - 1}`, { "reelCount": @Model.M, "winningSet": emptyRow, "symbols": images, "height": 126, "width": 126, "callback": callbackFunction });
+            //events
+            $("#play-game").click(function (e) {
+                e.preventDefault();
+                const $stakeForm = $('#stake-form');
+                const dataToSend = $stakeForm.serialize();
+
+                $.ajax({
+                    url: $stakeForm.attr('action'), 
+                    type: "post",
+                    data: dataToSend,
+                    statusCode: {
+                        400: function (result) {
+                            $('#status-message').html(result.responseText);
+                        }
+                    },
+                    success: function (result) {
+
+                        let matrix = JSON.parse(result);
+                        for (var i = 0; i < matrix.length; i++) {
+                            for (var j = 0; j < matrix[i].length; j++) {
+                                matrix[i][j] = imageNames.indexOf(matrix[i][j].toLowerCase());
+                            }
+                        }
+                        for (let i = 0; i < ezslots.length; i++) {
+                            ezslots[i].winSetChange(matrix[i]);
+                        }
+                        for (let slot of ezslots) {
+                            slot.win();
+                        }
+                    },
+                });
+            });
+        });
+    </script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

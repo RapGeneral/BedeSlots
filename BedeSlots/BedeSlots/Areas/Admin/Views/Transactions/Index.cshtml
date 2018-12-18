@@ -1,0 +1,94 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div id="status-message">
+</div>
+
+<br />
+
+<div>
+    <div id="all-filter">
+        <div id="username-input" class="col-md-3">
+            <input class="form-control" placeholder="Username" />
+        </div>
+        <div id="minvalue-input" class="col-md-3">
+            <input class="form-control" placeholder="Minimum Amount" />
+        </div>
+        <div id="maxvalue-input" class="col-md-3">
+            <input class="form-control" placeholder="Maximum Amount" />
+        </div>
+        <div id="types-input" class="col-md-3">
+            <select class="selectpicker" multiple="multiple" name="TransactionTypes" asp-items="@Model.TransactionTypes"></select>
+        </div>
+        <div id="sort-input" class="col-md-3">
+            <label>Sort by: </label>
+            <select class="selectpicker" name="SortProps" asp-items="@Model.SortProp"></select>
+        </div>
+        <div id="descending-input" class="navbar-left" >
+            <input type="checkbox" value="true">Descending<br>
+        </div>
+    </div>
+    <button id="all-filter" class="btn btn-success col-lg-1" >Filter</button>
+</div>
+
+<div class="row"></div>
+
+<div id="table-content">
+    <partial name="_TransactionGrid" model="Model.PagedTransactions" />
+</div>
+
+
+@section Scripts {
+    <script>
+
+
+		$(document).on("click", "#content-pager a", function () {
+            const userName = $("#username-input input").val();
+            const min = $("#minvalue-input input").val();
+            const max = $("#maxvalue-input input").val();
+            const types = $("#types-input select").val();
+            const sortBy = $("#sort-input select").val();
+            const descending = $("#descending-input input").is(':checked');
+            const modUrl = $(this).attr("href") + '&username=' + userName + '&min=' + min + '&max=' + max + '&types=' + types + '&sortBy=' + sortBy + '&descending=' + descending;
+			$.ajax({
+				url: modUrl,
+				type: 'GET',
+				cache: false,
+				success: function (result) {
+					$('#table-content').html(result);
+				}
+			});
+
+            history.pushState("", "", `?page=${$(this).text()}&username=${userName}&min=${min}&max${max}&types=${types}&sortBy=${sortBy}&descending=${descending}`);
+			return false;
+		});
+
+        $("button#all-filter").click(function () {
+            const userName = $("#username-input input").val();
+            const min = $("#minvalue-input input").val();
+            const max = $("#maxvalue-input input").val();
+            const types = $("#types-input select").val();
+            const sortBy = $("#sort-input select").val();
+            const descending = $("#descending-input input").is(':checked');
+            const pathname = window.location.pathname.toLowerCase().replace(`@nameof(TransactionsController.Index).ToLower()`, `@nameof(TransactionsController.TransactionGrid).ToLower()`);
+            const modUrl = pathname + '?username=' + userName + '&min=' + min + '&max=' + max + '&types=' + types + '&sortBy=' + sortBy + '&descending=' + descending;
+			$.ajax({
+				url: modUrl,
+				type: 'GET',
+				cache: false,
+				success: function (result) {
+					$('#table-content').html(result);
+				}
+			});
+
+            history.pushState("", "", `?username=${userName}&min=${min}&max=${max}&types=${types}&sortBy=${sortBy}&descending=${descending}`);
+			return false;
+        });
+
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

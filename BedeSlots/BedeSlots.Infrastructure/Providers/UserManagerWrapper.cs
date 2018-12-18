@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BedeSlots.Infrastructure.Providers.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace BedeSlots.Infrastructure.Providers
 {
@@ -14,7 +15,7 @@ namespace BedeSlots.Infrastructure.Providers
 
         public UserManagerWrapper(UserManager<T> userManager)
         {
-            this._userManager = userManager;
+            _userManager = userManager;
         }
 
         public UserManager<T> Instance => _userManager;
@@ -47,5 +48,22 @@ namespace BedeSlots.Infrastructure.Providers
         {
             return await _userManager.GetUserAsync(claimsPrincipal);
         }
-	}
+
+        public async Task<IdentityResult> AddToRoleAsync(T user, string role)
+        {
+            return await _userManager.AddToRoleAsync(user, role);
+        }
+        public async Task<IdentityResult> RemoveFromRoleAsync(T user, string role)
+        {
+            return await _userManager.RemoveFromRoleAsync(user, role);
+        }
+        public string GetUserId(ClaimsPrincipal principal)
+        {
+            return _userManager.GetUserId(principal);
+        }
+        public async Task<IdentityResult> CreateAsync(T user, string password)
+        {
+            return await _userManager.CreateAsync(user, password);
+        }
+    }
 }

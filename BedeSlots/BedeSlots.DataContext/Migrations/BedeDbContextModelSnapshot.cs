@@ -28,15 +28,34 @@ namespace BedeSlots.DataContext.Migrations
 
                     b.Property<decimal>("Money");
 
-                    b.Property<string>("UserId");
+                    b.Property<Guid?>("TypeId");
+
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
                     b.HasIndex("CurrencyId");
 
+                    b.HasIndex("TypeId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Balances");
+                });
+
+            modelBuilder.Entity("BedeSlots.DataModels.BalanceType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BalanceTypes");
                 });
 
             modelBuilder.Entity("BedeSlots.DataModels.BankDetails", b =>
@@ -56,7 +75,8 @@ namespace BedeSlots.DataContext.Migrations
 
                     b.Property<DateTime?>("ModifiedOn");
 
-                    b.Property<string>("Number");
+                    b.Property<string>("Number")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -68,7 +88,8 @@ namespace BedeSlots.DataContext.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CurrencyName");
+                    b.Property<string>("CurrencyName")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -108,7 +129,8 @@ namespace BedeSlots.DataContext.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<decimal>("OpeningBalance");
 
@@ -128,7 +150,9 @@ namespace BedeSlots.DataContext.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
                     b.HasKey("Id");
 
@@ -146,8 +170,6 @@ namespace BedeSlots.DataContext.Migrations
                         .IsConcurrencyToken();
 
                     b.Property<DateTime>("CreatedOn");
-
-                    b.Property<Guid?>("CurrencyId");
 
                     b.Property<DateTime>("DateOfBirth");
 
@@ -185,8 +207,6 @@ namespace BedeSlots.DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CurrencyId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -203,6 +223,10 @@ namespace BedeSlots.DataContext.Migrations
                     b.Property<string>("UserId");
 
                     b.Property<Guid>("BankDetailsId");
+
+                    b.Property<DateTime?>("DeletedOn");
+
+                    b.Property<bool>("IsDeleted");
 
                     b.HasKey("UserId", "BankDetailsId");
 
@@ -328,9 +352,14 @@ namespace BedeSlots.DataContext.Migrations
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("BedeSlots.DataModels.BalanceType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId");
+
                     b.HasOne("BedeSlots.DataModels.User", "User")
                         .WithMany("Balances")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BedeSlots.DataModels.Rate", b =>
@@ -357,13 +386,6 @@ namespace BedeSlots.DataContext.Migrations
                         .WithMany()
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BedeSlots.DataModels.User", b =>
-                {
-                    b.HasOne("BedeSlots.DataModels.Currency", "Currency")
-                        .WithMany("Users")
-                        .HasForeignKey("CurrencyId");
                 });
 
             modelBuilder.Entity("BedeSlots.DataModels.UserBankDetails", b =>

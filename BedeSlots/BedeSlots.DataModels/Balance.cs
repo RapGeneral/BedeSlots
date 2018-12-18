@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BedeSlots.DataModels
 {
@@ -19,6 +18,8 @@ namespace BedeSlots.DataModels
         public Currency Currency { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
+
+        public BalanceType Type { get; set; }
         
     }
 }
