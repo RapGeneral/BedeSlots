@@ -109,9 +109,21 @@ namespace BedeSlots.Services
         {
             var cacheChances = cache.GetOrCreate("GameRowWinCoefficients", entry =>
             {
-                var coeffsAsJson = reader.ReadAllFrom(@"..\BedeSlots.Services\GameCoefficients.json");
-                entry.SlidingExpiration = TimeSpan.FromHours(1);
-                return JsonConvert.DeserializeObject<Dictionary<string, decimal>>(coeffsAsJson);
+                try
+                {
+                    var coeffsAsJson = reader.ReadAllFrom(@"..\BedeSlots.Services\GameCoefficients.json");
+                    entry.SlidingExpiration = TimeSpan.FromHours(1);
+                    return JsonConvert.DeserializeObject<Dictionary<string, decimal>>(coeffsAsJson);
+                }
+                catch (Exception)
+                {
+                    var defaultRates = new Dictionary<string, decimal>();
+                    defaultRates[GameItemChanceOutOf100.Apple.ToString()] = 0.4M;
+                    defaultRates[GameItemChanceOutOf100.Pen.ToString()] = 0.6M;
+                    defaultRates[GameItemChanceOutOf100.Pineapple.ToString()] = 0.8M;
+                    defaultRates[GameItemChanceOutOf100.PPAP.ToString()] = 0.0M;
+                    return defaultRates;
+                }
             });
             return cacheChances[item.ToString()];
         }
