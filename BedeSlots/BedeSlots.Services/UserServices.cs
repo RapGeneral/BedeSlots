@@ -117,13 +117,13 @@ namespace BedeSlots.Services
             {
                 UserId = userId,
                 Currency = currencies.First(cur => cur.CurrencyName.ToLower() == nativeCurrency.ToLower()),
-                Type = await GetNativeBalanceTypeCached()
+				TypeID = await GetNativeBalanceTypeIdCached()
             };
             var baseBalance = new Balance
             {
                 UserId = userId,
                 Currency = currencies.First(cur => cur.CurrencyName.ToLower() == BASE_CURRENCY.ToLower()),
-                Type = await GetBaseBalanceTypeCached()
+                TypeID = await GetBaseBalanceTypeIdCached()
             };
 
             await balanceRepo.AddAsync(nativeBalance);
@@ -167,20 +167,20 @@ namespace BedeSlots.Services
             return models;
         }
 
-        private async Task<BalanceType> GetNativeBalanceTypeCached()
+        private async Task<Guid> GetNativeBalanceTypeIdCached()
         {
             return await cache.GetOrCreate("BalanceTypeNative", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(12);
-                return await balanceTypeRepo.All().Where(bal => bal.Name == BalanceTypes.Personal.ToString()).FirstOrDefaultAsync();
+                return await balanceTypeRepo.All().Where(balt => balt.Name == BalanceTypes.Personal.ToString()).Select(balt => balt.Id).FirstOrDefaultAsync();
             });
         }
-        private async Task<BalanceType> GetBaseBalanceTypeCached()
+        private async Task<Guid> GetBaseBalanceTypeIdCached()
         {
             return await cache.GetOrCreate("BalanceTypeBase", async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours(12);
-                return await balanceTypeRepo.All().Where(bal => bal.Name == BalanceTypes.Base.ToString()).FirstOrDefaultAsync();
+                return await balanceTypeRepo.All().Where(balt => balt.Name == BalanceTypes.Base.ToString()).Select(balt => balt.Id).FirstOrDefaultAsync();
             });
         }
 

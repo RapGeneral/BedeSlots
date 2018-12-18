@@ -39,7 +39,9 @@ namespace BedeSlots.Tests.Services.UserServicesTests
             const string userId = "poesho";
             const string nativeCurrency = "EUR";
             const string baseCurrency = "USD";
-            var mappingProviderMock = new Mock<IMappingProvider>();
+			Guid baseTypeId = Guid.NewGuid();
+			Guid nativeTypeId = Guid.NewGuid();
+			var mappingProviderMock = new Mock<IMappingProvider>();
             var memoryCache = new MemoryCache(new MemoryCacheOptions());
 
             var currency1 = new Currency { CurrencyName = baseCurrency };
@@ -68,8 +70,8 @@ namespace BedeSlots.Tests.Services.UserServicesTests
 
             var userBankDetailsMock = new Mock<IRepository<UserBankDetails>>();
 
-            var balanceTypeBase = new BalanceType { Name = "Base" };
-            var balanceTypeNative = new BalanceType { Name = "Personal" };
+            var balanceTypeBase = new BalanceType { Name = "Base", Id = baseTypeId };
+            var balanceTypeNative = new BalanceType { Name = "Personal", Id = nativeTypeId };
             var balanceTypeRepo = new Mock<IRepository<BalanceType>>();
             balanceTypeRepo
                 .Setup(btr => btr.All())
@@ -86,8 +88,8 @@ namespace BedeSlots.Tests.Services.UserServicesTests
             //Assert
             balanceRepoMock.Verify(brm => brm.AddAsync(It.IsAny<Balance>()), Times.Exactly(2));
             balanceRepoMock.Verify(brm => brm.SaveAsync(), Times.Once);
-            Assert.IsTrue(newlyCreatedBalances.Any(ncb => ncb.Currency.CurrencyName == nativeCurrency && ncb.Type.Name == BalanceTypes.Personal.ToString()));
-            Assert.IsTrue(newlyCreatedBalances.Any(ncb => ncb.Currency.CurrencyName == baseCurrency && ncb.Type.Name == BalanceTypes.Base.ToString()));
+            Assert.IsTrue(newlyCreatedBalances.Any(ncb => ncb.Currency.CurrencyName == nativeCurrency && ncb.TypeID ==nativeTypeId));
+            Assert.IsTrue(newlyCreatedBalances.Any(ncb => ncb.Currency.CurrencyName == baseCurrency && ncb.TypeID == baseTypeId));
             Assert.IsTrue(newlyCreatedBalances.All(ncb => ncb.UserId == userId));
         }
         [TestMethod]

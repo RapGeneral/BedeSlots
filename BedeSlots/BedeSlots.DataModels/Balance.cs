@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace BedeSlots.DataModels
 {
-    public class Balance
-    {
-        public Guid Id { get; set; }
+	public class Balance
+	{
+		public Guid Id { get; set; }
 
-        public string UserId { get; set; }
+		public string UserId { get; set; }
 
-        public Guid CurrencyId { get; set; }
+		public Guid CurrencyId { get; set; }
+		public Guid TypeID { get; set; }
 
         public decimal Money { get; set; }
 
@@ -20,6 +21,5 @@ namespace BedeSlots.DataModels
         public ICollection<Transaction> Transactions { get; set; }
 
         public BalanceType Type { get; set; }
-        
     }
 }

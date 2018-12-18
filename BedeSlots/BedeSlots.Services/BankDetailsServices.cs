@@ -29,7 +29,7 @@ namespace BedeSlots.Services
 
         public async Task<BankDetailsViewModel> AddBankDetailsAsync(string number, int cvv, DateTime expiryDate, string userId)
         {
-            int dateResult = DateTime.Compare(expiryDate, dateTime.Now().AddMonths(-1));
+            int dateResult = DateTime.Compare(expiryDate, dateTime.Now());
 
             if (dateResult < 0)
             {
@@ -43,7 +43,11 @@ namespace BedeSlots.Services
                                         .Where(ubd => ubd.UserId == userId 
                                             && ubd.BankDetailsId == potentialBankDetails.Id)
                                         .FirstOrDefaultAsync();
-                if (potentialUserBankDetails.IsDeleted)
+				if (potentialUserBankDetails is null)
+				{
+					throw new ArgumentException("The card is already being used!");
+				}
+				if (potentialUserBankDetails.IsDeleted)
                 {
                     potentialUserBankDetails.IsDeleted = false;
                     await userBankDetailsRepo.SaveAsync();

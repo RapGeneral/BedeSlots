@@ -40,6 +40,8 @@ namespace BedeSlots.Areas.Identity.Models.AccountViewModels
 
         [Required]
         [Display(Name = "Date of Birth")]
-        public DateTime DateOfBirth { get; set; }
+		[DataType(DataType.Date)]
+		[DisplayFormat(DataFormatString = "{dd/mm/yy}")]
+		public DateTime DateOfBirth { get; set; }
     }
 }

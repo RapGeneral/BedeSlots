@@ -7,8 +7,8 @@ using System.Collections.Generic;
 namespace BedeSlots.GlobalData.GlobalViewModels
 {
     public class TransactionViewModel
-    {    
-        public DateTime Date { get; set; }
+    {
+		public DateTime Date { get; set; }
 
         public TypeOfTransaction Type { get; set; }
 
