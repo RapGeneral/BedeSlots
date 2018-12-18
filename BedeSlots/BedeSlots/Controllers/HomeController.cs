@@ -58,21 +58,21 @@ namespace BedeSlots.Controllers
                 return PartialView("_StatusMessage", "Error: Incorrect format!");
             }
             var userId = userManager.GetUserId(User);
-            var balanceInfo = await userServices.GetBalanceInformation(userId);
+            var balanceInfo = userServices.GetBalanceInformation(userId).Result;
             if (balanceInfo.Amount - model.Stake < 0)
             {
                 Response.StatusCode = 400;
                 return PartialView("_StatusMessage", "Error: You cant bet more than what you have!");
             }
-            var usdChangeOfStake = await userServices.UpdateUserBalanceByAmount(-model.Stake, userId);
-            await transactionServices.CreateTransactionAsync(TypeOfTransaction.Stake, "Stake", usdChangeOfStake, userId);
+            var usdChangeOfStake = userServices.UpdateUserBalanceByAmount(-model.Stake, userId).Result;
+            transactionServices.CreateTransactionAsync(TypeOfTransaction.Stake, "Stake", usdChangeOfStake, userId).Wait();
             var gameMatrix = slotGameServices.Run(model.N, model.M);
             var coef = slotGameServices.Evaluate(gameMatrix);
             var earnings = model.Stake * coef;
             if (coef != 0)
             {
-                var usdChangeOfEarnings = await userServices.UpdateUserBalanceByAmount(earnings, userId);
-                await transactionServices.CreateTransactionAsync(TypeOfTransaction.Win, "Win", usdChangeOfEarnings, userId);
+                var usdChangeOfEarnings = userServices.UpdateUserBalanceByAmount(earnings, userId).Result;
+                transactionServices.CreateTransactionAsync(TypeOfTransaction.Win, "Win", usdChangeOfEarnings, userId).Wait();
             }
             //serialize matrix to json
             string result = jsonConverter.SerializeObject(gameMatrix, new JsonSerializerSettings
